@@ -8,6 +8,424 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <!-- Ajuste o caminho abaixo para o local do seu CSS -->
   <link rel="stylesheet"Stilo-da-Pag-Inicial/styles.css">
+  <!-----------------------------------------------------------------------estilo da pagina------------------------------------------>
+  <style>
+ :root{
+  --bg-1:#060b14; --bg-2:#0a1628;
+  --panel:rgba(255,255,255,0.04);
+  --glass:rgba(255,255,255,0.06);
+
+  --accent-a:#00c6ff; --accent-b:#0072ff;
+  --muted:#a9b0c0;
+
+  --card-radius:14px;
+  --container:1100px;
+  --max-width:1200px;
+  --header-h:64px;
+
+  /* Proporções */
+  --ratio-desktop: 4/5;
+  --ratio-tablet: 3/4;
+  --ratio-phone: 9/16;
+  --ratio: 4/5;
+}
+
+/* Proporção por breakpoint */
+@media (max-width:1060px){ :root{ --ratio: var(--ratio-tablet); } }
+@media (max-width:640px){ :root{ --ratio: var(--ratio-phone); } }
+
+/* ===== Base ===== */
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background:linear-gradient(180deg,var(--bg-1),var(--bg-2));
+  color:#fff;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;                 /* evita scroll lateral */
+  scroll-behavior:smooth;
+  text-align:center;
+}
+a{color:inherit;text-decoration:none}
+
+/* Util */
+.wrap{max-width:var(--container);margin:0 auto;padding:24px}
+.small{font-size:13px}
+.muted{color:var(--muted)}
+.muted-blurb{ color:var(--muted);font-size:0.95rem;margin-top:6px;line-height:1.5 }
+
+/* Ratio utilitário */
+.ratio-box{
+  width:100%;
+  aspect-ratio: var(--ratio);
+  border-radius: var(--card-radius);
+  overflow:hidden;
+  background: rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.06);
+}
+
+/* ===== Header + Menu ===== */
+.site-header{
+  position:sticky; top:0; z-index:100;
+  backdrop-filter: blur(8px);
+  background:linear-gradient(180deg, rgba(9,16,38,0.7), rgba(9,16,38,0.3));
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+.nav-row{
+  padding:12px 20px; min-height:var(--header-h);
+  display:flex; align-items:center; justify-content:space-between; gap:12px
+}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{
+  width:44px;height:44px;border-radius:10px;
+  background:linear-gradient(135deg,var(--accent-a),var(--accent-b));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;color:#03142a
+}
+.brand .t{font-weight:800}
+.brand .s{color:var(--muted);font-size:13px}
+
+/* Links topo */
+.nav-links{ display:flex; gap:18px; align-items:center; }
+.nav-links a{
+  color:var(--muted);
+  font-weight:600;
+  padding:10px 12px;
+  border-radius:10px;
+  position:relative;
+  transition: color .25s ease, background .25s ease, transform .25s ease, box-shadow .25s ease;
+  will-change: transform;
+  white-space:nowrap;
+}
+.nav-links a::after{
+  content:"";
+  position:absolute; left:14px; right:14px; bottom:6px; height:2px;
+  background:linear-gradient(90deg,var(--accent-a),var(--accent-b));
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform .28s ease;
+  border-radius:2px;
+}
+.nav-links a:hover,
+.nav-links a:focus-visible,
+.nav-links a.active{
+  color:#fff; background:rgba(0,198,255,0.10);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,114,255,.25);
+}
+.nav-links a:hover::after,
+.nav-links a:focus-visible::after,
+.nav-links a.active::after{ transform:scaleX(1); }
+
+/* CTA */
+.cta-btn{
+  background:linear-gradient(90deg,var(--accent-a),var(--accent-b));
+  color:#04121a; padding:10px 14px; border-radius:12px;
+  font-weight:700; box-shadow:0 10px 30px rgba(0,0,0,0.4);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.cta-btn:hover{ transform:translateY(-2px); box-shadow:0 14px 34px rgba(0,0,0,.5) }
+
+/* Botão hamburguer */
+.menu-toggle{
+  display:none;
+  background:transparent; border:0; color:#fff;
+  font-size:1.8rem; line-height:1; padding:8px 12px; cursor:pointer;
+}
+
+/* Backdrop */
+.nav-backdrop{
+  position:fixed; inset:0; z-index:98;
+  background:rgba(0,0,0,.55);
+  display:none;
+  opacity:0;
+  pointer-events:none;
+}
+
+/* Mobile drawer */
+@media (max-width:768px){
+  .menu-toggle{ display:block; }
+
+  .nav-links{
+    position:fixed; top:0; right:0; z-index:99;
+    height:100dvh; width:min(86vw, 360px);
+    background:#0a1628;
+    flex-direction:column; align-items:flex-start; gap:0;
+    padding-top:calc(var(--header-h) + 12px);
+    padding-inline:20px; padding-bottom:16px;
+    transform:translateX(100%);            /* 100% fora da tela */
+    transition:transform .30s ease;
+    box-shadow:-4px 0 20px rgba(0,0,0,0.5);
+    overscroll-behavior:contain;
+    touch-action:pan-y;
+    contain:layout paint;                  /* evita vazamento visual */
+  }
+
+  /* Quando aberto (classe aplicada no <body>) */
+  body.menu-open .nav-links{ transform:translateX(0); }
+  body.menu-open{ overflow:hidden; }       /* trava scroll do fundo */
+  body.menu-open .nav-backdrop{
+    display:block; opacity:1; pointer-events:auto;
+  }
+}
+
+/* Desktop */
+@media (min-width:769px){
+  .nav-links{ position:static; transform:none; box-shadow:none; height:auto; width:auto; padding:0; }
+}
+
+/* ===== HERO ===== */
+.hero{ padding:40px 0 8px; position:relative; isolation:isolate; }
+.hero-grid{
+  display:grid;
+  grid-template-columns:360px 1fr;
+  gap:36px;
+  align-items:center;
+  justify-items:center;
+}
+@media (max-width:1060px){ .hero-grid{ grid-template-columns:1fr; gap:20px; } }
+
+.profile{
+  display:flex; flex-direction:column; align-items:center; gap:14px;
+  padding:26px; border-radius:18px; background:rgba(255,255,255,0.03);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.06);
+  max-width: min(520px, 100%);
+}
+.avatar{
+  width:min(180px, 48vw);
+  aspect-ratio: 1/1;
+  border-radius:50%;
+  object-fit:cover;
+  border:5px solid rgba(0,198,255,0.12);
+  box-shadow:0 8px 30px rgba(0,198,255,0.08)
+}
+.name{font-size:clamp(1.3rem,3.8vw,1.6rem);font-weight:800;background:linear-gradient(90deg,var(--accent-a),var(--accent-b));-webkit-background-clip:text;color:transparent}
+.role{color:var(--muted);font-weight:600}
+.socials{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.socials a{padding:8px 10px;border-radius:10px;background:rgba(255,255,255,0.04);color:var(--muted);font-weight:600;transition:transform .25s ease, background .25s ease}
+.socials a:hover{background:linear-gradient(90deg, rgba(0,198,255,0.06), rgba(0,114,255,0.06));color:#fff; transform:translateY(-2px) }
+
+.hero-intro{max-width:70ch}
+.hero-intro h1{font-size:clamp(1.6rem,3.8vw,2.6rem);margin:0 0 10px}
+.hero-intro p{color:var(--muted);line-height:1.6;margin:0 0 18px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btn-primary{background:linear-gradient(90deg,var(--accent-a),var(--accent-b));color:#04121a;padding:12px 18px;border-radius:12px;font-weight:700;border:0;transition:transform .25s ease, box-shadow .25s ease}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,114,255,.3)}
+.btn-outline{padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.12);color:var(--muted);background:transparent;transition:transform .25s ease, background .25s ease}
+.btn-outline:hover{background:rgba(255,255,255,.06);color:#fff;transform:translateY(-2px)}
+
+/* ===== Seções ===== */
+section.content{padding:48px 20px; position:relative; isolation:isolate;}
+.section-title{font-size:1.6rem;margin:0 0 18px;background:linear-gradient(90deg,var(--accent-a),var(--accent-b));-webkit-background-clip:text;color:transparent}
+
+/* Serviços */
+.services-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:18px;
+  justify-items:center
+}
+.service{
+  padding:18px;border-radius:12px;background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.06);
+  transition:transform .25s ease, box-shadow .25s ease;
+  width:100%;
+  max-width:420px;
+}
+.service:hover{transform:translateY(-8px);box-shadow:0 12px 30px rgba(0,0,0,0.6)}
+.service h3{margin:6px 0;color:#fff}
+.service p{margin:6px 0;color:var(--muted);font-size:0.95rem}
+
+/* Cards / Cases */
+.cards-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:18px;
+  justify-content:center;
+  justify-items:center
+}
+.card{
+  background:rgba(255,255,255,0.03);
+  padding:16px;border-radius:12px;
+  border:1px solid rgba(255,255,255,0.06);
+  box-shadow:0 10px 30px rgba(0,0,0,0.6);
+  width:100%;
+  max-width:520px;
+}
+.card h4{margin:12px 0 8px}
+.card p{color:var(--muted);font-size:0.95rem;margin:0 0 10px}
+.tag{
+  display:inline-block;padding:16px 28px;border-radius:999px;
+  background:linear-gradient(90deg,var(--accent-a),var(--accent-b));
+  color:#04121a;font-weight:700;margin:auto
+}
+.meta{display:block;color:var(--muted);margin-top:6px;font-size:.9rem}
+
+.metric-row{
+  display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:10px
+}
+.metric{ background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06); border-radius:12px; padding:10px 12px; min-width:110px }
+.metric-num{ font-weight:800; font-size:1.1rem }
+.metric-label{ color:var(--muted); font-size:.85rem }
+
+.pill-group{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap }
+.pill{
+   align-items:center; gap:8px;
+  padding:8px 12px; border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  color:#fff; background:rgba(255,255,255,.04);
+  font-weight:600; font-size:.9rem
+}
+
+/* Contato */
+.contact-grid{
+  display:grid;gap:18px;justify-items:center
+}
+.contact-card{
+  padding:18px;border-radius:12px;background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.06);
+  width:100%; max-width:520px;
+}
+.contact-list{list-style:none;padding:0;margin:0}
+.contact-list li{margin:8px 0;color:var(--muted)}
+.contact-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+
+/* Responsivo */
+@media (max-width:1060px){
+  .contact-grid{grid-template-columns:1fr}
+}
+
+/* Acessibilidade */
+:focus-visible{
+  outline: 3px solid color-mix(in srgb, var(--accent-b) 70%, white 30%);
+  outline-offset: 3px;
+}
+/* ===== Details animado ===== */
+.case-details{
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:12px;
+  background:rgba(255,255,255,0.03);
+  overflow:hidden; /* borda arredondada também no conteúdo animado */
+}
+
+/* Remove o marcador padrão e dá cara de botão */
+.case-details summary{
+  list-style:none; /* Firefox */
+  cursor:pointer;
+  padding:10px 12px;
+  user-select:none;
+  outline:none;
+}
+.case-details summary::-webkit-details-marker{ display:none; } /* Chrome/Safari */
+
+/* Chevron + micro feedback */
+.case-details summary::after{
+  content:"▾";
+  margin-left:10px;
+  display:inline-block;
+  transform:translateY(1px) rotate(0deg);
+  transition: transform .25s ease;
+}
+.case-details[open] summary::after{
+  transform:translateY(1px) rotate(180deg);
+}
+
+/* Corpo animável (o JS cria esta div) */
+.case-details .details-body{
+  overflow:hidden;           /* importante para mascarar a animação de altura */
+  block-size:auto;           /* fallback */
+  padding:0 12px 12px;       /* respira quando aberto */
+}
+
+/* Estado enquanto anima (evita “pulos”) */
+.case-details.animating .details-body{
+  will-change: height;
+}
+
+/* Opcional: efeito de fade + slide do conteúdo interno */
+.case-details .details-body > *{
+  opacity:0;
+  transform:translateY(-4px);
+  transition: opacity .25s ease, transform .25s ease;
+}
+.case-details[open] .details-body > *{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* ===== WhatsApp CTA animado ===== */
+.wa-cta{ display:flex; flex-direction:column; align-items:center; gap:10px; margin-top:16px; }
+
+/* Botão base */
+.wa-btn{
+  position:relative;
+  display:inline-flex; align-items:center; gap:10px;
+  padding:14px 18px;
+  border-radius:14px;
+  background:linear-gradient(90deg,var(--accent-a),var(--accent-b));
+  color:#04121a;
+  font-weight:800;
+  border:0;
+  cursor:pointer;
+  box-shadow:0 12px 32px rgba(0,0,0,.35);
+  transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+  will-change: transform;
+}
+.wa-btn:hover{ transform:translateY(-2px); box-shadow:0 16px 40px rgba(0,0,0,.45); }
+.wa-btn:active{ transform:translateY(0); filter:brightness(.98); }
+
+/* Glow pulsante atrás do botão */
+.wa-glow{
+  position:absolute; inset:-8px;
+  border-radius:18px;
+  background: radial-gradient(60% 60% at 50% 50%, rgba(0,198,255,.35), rgba(0,114,255,.0));
+  filter: blur(8px);
+  animation: waPulse 2.2s ease-in-out infinite;
+  z-index:-1;
+}
+@keyframes waPulse {
+  0%,100%{ opacity:.55; transform:scale(.98); }
+  50%    { opacity:1;    transform:scale(1.02); }
+}
+
+/* Ícone “flutuando” levemente */
+.wa-icon{ display:inline-flex; line-height:0; }
+.wa-icon svg{ display:block; }
+.wa-btn:hover .wa-icon{ animation: waFloat 1.2s ease-in-out infinite; }
+@keyframes waFloat {
+  0%,100%{ transform:translateY(0); }
+  50%    { transform:translateY(-2px); }
+}
+
+/* Ripple no clique (criado via JS como .wa-ripple) */
+.wa-ripple{
+  position:absolute; border-radius:999px; pointer-events:none;
+  inset:auto; width:10px; height:10px; background:rgba(255,255,255,.55);
+  transform:translate(-50%,-50%) scale(1);
+  opacity:.55; filter: blur(0.5px);
+  animation: waRipple .55s ease-out forwards;
+  mix-blend-mode: screen;
+}
+@keyframes waRipple {
+  to { transform:translate(-50%,-50%) scale(14); opacity:0; }
+}
+
+/* Tip (feedback “Abrindo WhatsApp…”) */
+.wa-tip{ min-height: 1.2em; }
+
+/* Animação de entrada quando a seção entra em viewport */
+[data-observe].in-view .wa-btn{ animation: waPop .38s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes waPop {
+  from { transform: scale(.96) translateY(2px); opacity:0; }
+  to   { transform: scale(1) translateY(0);     opacity:1; }
+}
+
+     
+   </style>
 </head>
 <body>
 
@@ -208,11 +626,239 @@
     </div>
   </footer>
 
-  <!-- Seu JS atual (mantido) -->
-  <script src="Stilo da Pag-Inicial/script.js"></script>
+  <!------------------------------------------------- Seu JS atual (mantido) -------------------------->
+  <script>
+// Abre WhatsApp (já existente no seu projeto, mantenha se precisar)
+function openWhatsApp() {
+  window.open('https://wa.me/5511973367068', '_blank', 'noopener');
+}
+
+// ===== Menu móvel off-canvas =====
+(function(){
+  const header = document.getElementById('siteHeader');
+  const nav    = document.getElementById('site-nav');
+  const btn    = document.querySelector('.menu-toggle');
+  let backdrop = document.querySelector('.nav-backdrop');
+
+  // Cria backdrop se não existir no HTML
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.className = 'nav-backdrop';
+    document.body.appendChild(backdrop);
+  }
+
+  const openMenu = () => {
+    document.body.classList.add('menu-open');     // controla CSS e scroll
+    header?.classList.add('menu-open');           // compat c/ versões antigas
+    btn?.setAttribute('aria-expanded', 'true');
+  };
+
+  const closeMenu = () => {
+    document.body.classList.remove('menu-open');
+    header?.classList.remove('menu-open');
+    btn?.setAttribute('aria-expanded', 'false');
+  };
+
+  const isOpen = () => document.body.classList.contains('menu-open');
+
+  // Toggle no botão
+  btn?.addEventListener('click', () => (isOpen() ? closeMenu() : openMenu()));
+
+  // Fechar ao clicar no backdrop
+  backdrop.addEventListener('click', closeMenu);
+
+  // Fechar ao clicar em qualquer link do menu
+  nav?.addEventListener('click', (e) => {
+    const target = e.target;
+    if (target && target.matches('a')) closeMenu();
+  });
+
+  // Fechar no Esc
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen()) closeMenu();
+  });
+
+  // Ao redimensionar para desktop, garante que o menu não fique preso aberto
+  const mqDesktop = window.matchMedia('(min-width: 769px)');
+  mqDesktop.addEventListener('change', (ev) => {
+    if (ev.matches) closeMenu();
+  });
+})();
+
+// ===== <details> com animação suave de abrir/fechar =====
+(function(){
+  const DURATION = 260; // ms
+  const EASING = 'ease';
+
+  // Cria um .details-body envolvendo tudo que não é <summary>
+  function ensureBody(details){
+    let body = details.querySelector('.details-body');
+    if (!body){
+      body = document.createElement('div');
+      body.className = 'details-body';
+
+      const nodes = [];
+      for (const n of Array.from(details.childNodes)){
+        if (!(n.nodeType === 1 && n.tagName.toLowerCase() === 'summary')){
+          nodes.push(n);
+        }
+      }
+      nodes.forEach(n => body.appendChild(n));
+      details.appendChild(body);
+    }
+    return body;
+  }
+
+  function animateOpen(details, body){
+    details.classList.add('animating');
+    // mede altura final
+    body.style.height = 'auto';
+    const end = body.getBoundingClientRect().height;
+    // começa fechado
+    body.style.height = '0px';
+
+    requestAnimationFrame(() => {
+      body.style.transition = `height ${DURATION}ms ${EASING}`;
+      body.style.height = end + 'px';
+    });
+
+    const onEnd = () => {
+      body.style.height = 'auto';
+      body.style.transition = '';
+      details.classList.remove('animating');
+      body.removeEventListener('transitionend', onEnd);
+    };
+    body.addEventListener('transitionend', onEnd);
+  }
+
+  function animateClose(details, body){
+    details.classList.add('animating');
+    // mede altura atual
+    const start = body.getBoundingClientRect().height;
+    body.style.height = start + 'px';
+
+    requestAnimationFrame(() => {
+      body.style.transition = `height ${DURATION}ms ${EASING}`;
+      body.style.height = '0px';
+    });
+
+    const onEnd = () => {
+      body.style.transition = '';
+      details.classList.remove('animating');
+      // só depois da animação fechamos de fato
+      details.removeAttribute('open');
+      body.style.height = '';
+      body.removeEventListener('transitionend', onEnd);
+    };
+    body.addEventListener('transitionend', onEnd);
+  }
+
+  function setup(details){
+    const body = ensureBody(details);
+
+    // Se já iniciar aberto, garante altura correta
+    if (details.hasAttribute('open')){
+      body.style.height = 'auto';
+    }else{
+      body.style.height = '0px';
+    }
+
+    // Intercepta o clique no summary para animar
+    const summary = details.querySelector('summary');
+    if (!summary) return;
+
+    summary.addEventListener('click', (e) => {
+      e.preventDefault(); // evita o toggle instantâneo nativo
+
+      const isOpen = details.hasAttribute('open');
+
+      if (!isOpen){
+        // marca aberto já, para estados CSS ([open]) e acessibilidade
+        details.setAttribute('open', '');
+        animateOpen(details, body);
+      }else{
+        animateClose(details, body);
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('details.case-details').forEach(setup);
+  });
+})();
+
+// ===== WhatsApp CTA melhorado =====
+(function(){
+  const $cta = document.getElementById('waCta');
+  const $wrap = $cta?.closest('.wa-cta');
+  const $tip  = $wrap?.querySelector('.wa-tip');
+
+  if (!$cta || !$wrap) return;
+
+  // Observa entrada no viewport para animar
+  const obs = new IntersectionObserver(([entry])=>{
+    if (entry.isIntersecting) {
+      $wrap.classList.add('in-view');
+      obs.disconnect();
+    }
+  }, { threshold: .35 });
+  obs.observe($wrap);
+
+  // Ripple no ponto do clique
+  function ripple(e){
+    const rect = $cta.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const r = document.createElement('span');
+    r.className = 'wa-ripple';
+    r.style.left = x + 'px';
+    r.style.top  = y + 'px';
+    $cta.appendChild(r);
+    r.addEventListener('animationend', ()=> r.remove());
+  }
+
+  // Detecção simples mobile
+  const isMobile = /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
+
+  function openWA(){
+    const phone = $cta.getAttribute('data-phone') || '';
+    const text  = ($cta.getAttribute('data-text') || '').trim();
+    const msg   = encodeURIComponent(text);
+    const appLink = `whatsapp://send?phone=${phone}&text=${msg}`;
+    const webLink = `https://wa.me/${phone}?text=${msg}`;
+
+    // feedback
+    if ($tip) {
+      $tip.textContent = 'Abrindo WhatsApp…';
+      setTimeout(()=> $tip.textContent = '', 2500);
+    }
+
+    // Tenta app no mobile; se falhar, cai no web
+    if (isMobile) {
+      const t = setTimeout(()=> { window.open(webLink, '_blank', 'noopener'); }, 500);
+      window.location.href = appLink;
+      // se o app abrir, o timeout provavelmente não disparará (sem garantias, mas funciona bem na prática)
+      setTimeout(()=> clearTimeout(t), 1200);
+    } else {
+      window.open(webLink, '_blank', 'noopener');
+    }
+  }
+
+  // Click / Keyboard
+  $cta.addEventListener('click', (e)=>{ ripple(e); openWA(); });
+  $cta.addEventListener('keydown', (e)=>{
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openWA();
+    }
+  });
+})();
+    
+  </script>
 </body>
 
 </html>
+
 
 
 
