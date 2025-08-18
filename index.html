@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Kleber S. Lago — Marketing & Conteúdo</title>
+  <meta name="description" content="Kleber S. Lago — Marketing Digital, conteúdo, redação publicitária e projetos de lançamento. Consultoria, campanhas e gestão de tráfego."/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <!-- Ajuste o caminho abaixo para o local do seu CSS -->
+  <link rel="stylesheet" href="C:\Users\Coneccta Sistemas\Desktop\Projeto Binho\Stilo da Pag-Inicial\styles.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header aria-label="Cabeçalho principal" class="site-header" id="siteHeader">
+    <div class="nav-row wrap">
+      <a class="brand" href="./index.html" aria-label="Ir para a página inicial">
+        <div class="logo" aria-hidden="true">KS</div>
+        <div>
+          <div class="t">Kleber S. Lago</div>
+          <div class="s">Marketing & Conteúdo</div>
+        </div>
+      </a>
+
+      <!-- Botão hamburguer (mantém as configs do menu; controle via JS existente) -->
+      <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-controls="site-nav" aria-expanded="false">
+        ☰
+      </button>
+
+      <nav id="site-nav" class="nav-links" aria-label="Menu principal">
+        <a href="#home" class="active">Início</a>
+        <a href="C:\Users\Coneccta Sistemas\Desktop\Projeto Binho\Curriculo\CV Kleber Lago.pdf" download="Kleber_S_Lago_CV.pdf">Currículo</a>
+        <a href="C:\Users\Coneccta Sistemas\Desktop\Projeto Binho\projetos.html">Projetos</a>
+        <a class="cta-btn" href="https://wa.me/5511973367068" target="_blank" rel="noopener">WhatsApp</a>
+      </nav>
+    </div>
+  </header>
+  <!-- Backdrop para o menu móvel (ativado quando header ganha .menu-open) -->
+  <div class="nav-backdrop" aria-hidden="true"></div>
+
+  <!-- HERO -->
+  <main class="hero" id="home" role="main">
+    <div class="hero-grid wrap">
+      <aside class="profile" aria-labelledby="profile-name">
+        <img class="avatar" src="C:\Users\Coneccta Sistemas\Desktop\Projeto Binho\Foto de Perfil\Design sem nome.png" alt="Foto de Kleber S. Lago">
+        <div id="profile-name" class="name">Kleber S. Lago</div>
+        <div class="role">Graduado em Comunicação e Marketing (FAAP) — Coordenador de Marketing e Conteúdo</div>
+        <p class="muted-blurb">Mais de uma década de experiência em produção de conteúdo, redação publicitária, gestão de mídias sociais e lançamentos.</p>
+        <div class="socials">
+          <a href="https://www.instagram.com/omktdokleber/" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://www.linkedin.com/in/kleber-s-lago/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://wa.me/5511973367068" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+      </aside>
+
+      <section class="hero-intro" aria-labelledby="hero-title">
+        <h1 id="hero-title">Marketing digital com estratégia, conteúdo e resultado</h1>
+        <p>Experiência prática com grandes veículos (Exame, Terra, RedeTV!, Veja) e em empresas como Turotest (CentroMotion), Phytus Farma e OficialFarma.</p>
+        <div class="hero-actions">
+          <button class="btn-primary" onclick="openWhatsApp()">Fale por WhatsApp</button>
+          <a class="btn-outline" href="C:\Users\Coneccta Sistemas\Desktop\Projeto Binho\Stilo da Pag-Certificado\Certificados.html">Ver certificados</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- SERVICES -->
+  <section id="services" class="content wrap" aria-labelledby="services-title">
+    <h2 class="section-title" id="services-title">Serviços</h2>
+    <div class="services-grid" role="list">
+      <div class="service" role="listitem"><h3>Produção de Conteúdo</h3><p>Textos para redes, e-commerce, blogs e e-mails com foco em SEO.</p></div>
+      <div class="service" role="listitem"><h3>E-mail Marketing & Automação</h3><p>Campanhas, segmentação e disparos com relatórios de performance.</p></div>
+      <div class="service" role="listitem"><h3>Gestão de Campanhas & Tráfego</h3><p>Planejamento e execução de campanhas pagas e análise de ROI.</p></div>
+    </div>
+  </section>
+
+  <!-- CASES -->
+  <section id="cases" class="content wrap" aria-labelledby="cases-title">
+    <h2 class="section-title" id="cases-title">Cases de Sucesso — Protelim</h2>
+                            <br>
+    <div class="cards-grid">
+      <!-- Case 1 -->
+      <article class="card case-neo" aria-labelledby="case-protelim-title">
+        <header class="case-head">
+          <span class="tag glow">Protelim • 2024</span>
+        </header>
+                           <br>
+        <span class="meta">📍 Geo Ads por raio • 🧩 15 revendas • ⏱️ 60 dias</span> <br>
+        <h4 id="case-protelim-title">Go-to-market geolocalizado com revendas estratégicas</h4>
+        <p>Penetração acelerada em pontos de venda com alto potencial e baixa participação no mix. Ativação com anúncios por raio, pré-lançamento no PDV, mix promocional customizado, treinamento online e incentivo com bonificação.</p>
+                                  <br>
+        <!-- KPIs -->
+        <div class="metric-row" aria-label="Indicadores-chave do projeto">
+          <div class="metric"><div class="metric-num">+25%</div><div class="metric-label">Penetração</div></div>
+          <div class="metric"><div class="metric-num">+18%</div><div class="metric-label">Ticket médio</div></div>
+          <div class="metric"><div class="metric-num">+20%</div><div class="metric-label">Vendas do produto</div></div>
+        </div>
+                                  <br>
+        <!-- Alavancas -->
+        <div class="pill-group" aria-label="Alavancas do projeto">
+          <span class="pill">Pré-lançamento no PDV</span>
+          <span class="pill">Segmentação por proximidade</span>
+          <span class="pill">Treinamento de vendedores</span>
+          <span class="pill">Incentivo com bonificação</span>
+        </div>
+
+        <br>
+
+        <!-- Playbook -->
+        <details class="case-details">
+          <summary class="pill" role="button">Ver mais</summary>
+          <ol class="case-steps" style="text-align:left; margin:12px auto 0; max-width:60ch;">
+            <li><strong>Mapeamento:</strong> análise de KPIs (share, ticket, potencial) e seleção de 15 revendas.</li>
+            <li><strong>Rotas de mídia:</strong> geo ads por raio com mensagens orientadas a conversão no PDV.</li>
+            <li><strong>Disponibilidade:</strong> abastecimento e exposição antes da campanha digital nacional.</li>
+            <li><strong>Capacitação:</strong> treinamento remoto e materiais de abordagem para vendedores.</li>
+            <li><strong>Performance:</strong> incentivo por meta e otimizações semanais por revenda.</li>
+          </ol>
+        </details>
+      </article>
+
+      <!-- Case 2 -->
+      <article class="card case-neo" aria-labelledby="case-protcast-title">
+        <header class="case-head">
+          <span class="tag glow">Protelim - Protcast</span>
+        </header>
+                                           <br>
+        <span class="meta">🎙️ Conteúdo proprietário • Distribuição multicanal • Integração comercial</span> <br>
+        <h4 id="case-protcast-title">Protcast — “Conexões que Geram Negócios”</h4>
+        <p>Podcast com empresários e formadores de opinião do setor automotivo. Reforço de posicionamento, aumento de audiência e geração de networking qualificado com entrada do time comercial.</p>
+                                                <br>
+        <!-- KPIs -->
+        <div class="metric-row" aria-label="Indicadores do Protcast">
+          <div class="metric"><div class="metric-num">+30%</div><div class="metric-label">Audiência nas redes</div></div>
+          <div class="metric"><div class="metric-num">120&nbsp;mil</div><div class="metric-label">Visualizações somadas</div></div>
+          <div class="metric"><div class="metric-num">+18%</div><div class="metric-label">Tráfego no site</div></div>
+          <div class="metric"><div class="metric-num">22%</div><div class="metric-label">Ouvintes → leads</div></div>
+        </div>
+
+        <br><br>
+
+        <details class="case-details">
+          <summary class="pill" role="button">Ver mais</summary>
+          <ul style="text-align:left; margin:12px auto 0; max-width:60ch;">
+            <li><strong>Formato:</strong> pauta de tendências + casos práticos do setor automotivo.</li>
+            <li><strong>Convidados:</strong> empresários e formadores de opinião do segmento.</li>
+            <li><strong>Distribuição:</strong> multicanal com cortes e teasers otimizados.</li>
+            <li><strong>Integração:</strong> roteiros de follow-up comercial e captura de leads.</li>
+          </ul>
+        </details>
+                        <br>
+        <p class="highlight-cta" style="margin-top:12px;">
+          <a class="btn-primary insta-cta" href="https://www.instagram.com/p/C9AWsZlOl5E/" target="_blank" rel="noopener">
+            <span aria-hidden="true">📸</span>
+            <span>Ver publicação no Instagram</span>
+          </a>
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <!-------------------------------------------------------------- CONTAto ------------------------- -->
+<section id="contact" class="content wrap" aria-labelledby="contact-title">
+  <h2 class="section-title" id="contact-title">Contato</h2>
+
+  <div class="contact-grid">
+    <div class="contact-card" role="region" aria-label="Informações de contato">
+      <h3>Vamos conversar?</h3>
+      <p class="muted">Consultoria, projetos ou contratações — respondo rápido pelo WhatsApp.</p>
+
+      <ul class="contact-list">
+        <li><strong>Email:</strong> <a href="mailto:contato@kleberlago.com.br">contato@kleberlago.com.br</a></li>
+      </ul>
+
+      <!-- CTA animado -->
+      <div class="wa-cta" data-observe>
+        <button
+          class="wa-btn"
+          type="button"
+          id="waCta"
+          aria-label="Abrir conversa no WhatsApp"
+          data-phone="5511973367068"
+          data-text="Olá, Kleber! Vim pelo site e gostaria de falar sobre consultoria/marketing. Podemos conversar?"
+        >
+          <span class="wa-glow" aria-hidden="true"></span>
+          <span class="wa-icon" aria-hidden="true">
+            <!-- Ícone WA minimalista em SVG -->
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" focusable="false" aria-hidden="true">
+              <path d="M20.52 3.48A11.8 11.8 0 0 0 12.04 0C5.62 0 .41 5.2.41 11.62c0 2.05.53 4.06 1.54 5.83L0 24l6.75-1.93a11.6 11.6 0 0 0 5.28 1.33h.01c6.42 0 11.63-5.21 11.63-11.62 0-3.1-1.21-6.02-3.42-8.3ZM12.04 21.2a9.56 9.56 0 0 1-4.88-1.34l-.35-.21-4 .98.99-3.9-.23-.36a9.57 9.57 0 1 1 8.47 4.83Zm5.57-7.13c-.3-.15-1.77-.87-2.05-.97-.28-.1-.48-.15-.68.15-.2.3-.78.97-.96 1.17-.18.2-.35.22-.65.07-.3-.15-1.27-.47-2.42-1.5-.89-.79-1.49-1.77-1.67-2.07-.18-.3-.02-.47.13-.62.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.08-.15-.68-1.62-.93-2.23-.24-.58-.5-.5-.68-.5h-.57c-.2 0-.52.08-.8.37-.28.3-1.05 1.02-1.05 2.5s1.08 2.9 1.23 3.1c.15.2 2.13 3.25 5.16 4.56.72.31 1.28.49 1.72.62.72.23 1.38.2 1.9.12.58-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35Z"/>
+            </svg>
+          </span>
+          <span class="wa-label">Falar no WhatsApp</span>
+        </button>
+        <div class="wa-tip muted small" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap footer-row">
+      <div>
+        <strong>Kleber S. Lago</strong>
+        <div class="small muted">Marketing & Conteúdo • © 2025</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Seu JS atual (mantido) -->
+  <script src="C:\Users\Coneccta Sistemas\Desktop\Projeto Binho\Stilo da Pag-Inicial\script.js"></script>
+</body>
+</html>

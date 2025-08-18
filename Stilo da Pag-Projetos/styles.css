@@ -1,0 +1,191 @@
+:root{
+  --bg1:#06070b; --bg2:#091026; --fg:#ffffff;
+  --c1:#00f7ff; --c2:#ff3bd4; --glow:rgba(0,247,255,0.35);
+
+  /* razões base */
+  --ratio-ultrawide: 5 / 6;    /* monitores muito largos */
+  --ratio-desktop:   4 / 5;    /* desktops/laptops */
+  --ratio-tablet:    3 / 4;    /* tablets */
+  --ratio-phone:     9 / 16;   /* celulares padrão */
+  --ratio-phone-s:  10 / 19;   /* celulares muito estreitos */
+  --ratio-landscape:16 / 9;    /* telas baixas em landscape */
+
+  /* variável ÚNICA usada nos cards */
+  --shot-ratio: var(--ratio-desktop);
+}
+
+*{box-sizing:border-box}
+body{
+  background: linear-gradient(180deg,var(--bg1),var(--bg2));
+  color:var(--fg);
+  font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  margin:0; padding:0; text-align:center;
+}
+header{
+  background:rgba(0,0,0,.65);
+  padding:28px 16px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  position:sticky; top:0; backdrop-filter: blur(8px);
+  z-index:10;
+}
+.wrap{max-width:1100px; margin:auto; padding:24px}
+h1{
+  margin:0 0 6px;
+  font-size:clamp(22px,3vw,36px);
+  background:linear-gradient(90deg,var(--c1),var(--c2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.subtitle{opacity:.8; margin:0}
+
+/* seção do case */
+.case-section{
+  display:grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap:22px;
+  align-items:stretch;
+  margin:34px 0 44px;
+}
+/* alterna a ordem a cada seção par */
+.case-section:nth-child(even){ grid-template-columns: .9fr 1.1fr; }
+.case-section:nth-child(even) .media{order:2}
+.case-section:nth-child(even) .text-box{order:1}
+
+/* dupla de imagens */
+.media{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:14px;
+}
+.shot{
+  position:relative; overflow:hidden; border-radius:12px;
+  border:2px solid var(--c1);
+  box-shadow:0 0 22px var(--glow);
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  cursor: zoom-in;
+  background:rgba(255,255,255,.02);
+}
+.shot:hover{
+  transform: translateY(-2px);
+  box-shadow:0 0 28px rgba(255,59,212,.45);
+  border-color: var(--c2);
+}
+/* 👉 todas as telas usam a MESMA variável */
+.shot img{
+  width:100%; height:100%; display:block; object-fit:cover;
+  aspect-ratio: var(--shot-ratio);
+}
+.caption{
+  position:absolute; left:8px; bottom:8px;
+  background:rgba(0,0,0,.55);
+  padding:6px 10px; border-radius:999px;
+  font-size:.8rem; backdrop-filter: blur(6px);
+  border:1px solid rgba(255,255,255,.12);
+}
+
+/* caixa de texto destacada */
+.text-box{
+  background: rgba(255,255,255,0.05);
+  border: 2px solid transparent;
+  border-radius: 14px;
+  padding: 20px 18px;
+  text-align:left;
+  box-shadow: 0 0 22px var(--glow);
+  position:relative;
+  isolation:isolate;
+  border-image: linear-gradient(90deg,var(--c1),var(--c2)) 1;
+}
+.text-box::after{
+  content:"";
+  position:absolute; inset:-1.5px;
+  border-radius:14px;
+  pointer-events:none;
+  box-shadow: 0 0 38px rgba(0,247,255,.22);
+  z-index:-1;
+}
+.kicker{
+  font-size:.8rem; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--c1); opacity:.9; margin:0 0 6px;
+}
+.title{
+  font-weight:800; margin:0 0 10px; line-height:1.15;
+  font-size: clamp(18px,2.2vw,26px);
+}
+.desc{opacity:.95; line-height:1.7; margin:0 0 14px}
+.highlight{ color: var(--c2); text-shadow: 0 0 12px rgba(255,59,212,.8); }
+.chips{
+  display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 16px;
+}
+.chip{
+  font-size:.78rem; padding:6px 10px; border-radius:999px;
+  border:1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.06);
+}
+.metrics{
+  display:flex; gap:14px; flex-wrap:wrap; margin-top:6px;
+}
+.metric{
+  background: linear-gradient(90deg, rgba(0,247,255,.12), rgba(255,59,212,.12));
+  border:1px solid rgba(255,255,255,.14);
+  padding:10px 12px; border-radius:10px; min-width:120px;
+}
+.metric b{display:block; font-size:1.1rem}
+.links{ margin-top:12px }
+.links a{
+  color:var(--fg); text-decoration:none; font-weight:600;
+  background: linear-gradient(90deg,var(--c1),var(--c2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  border-bottom:1px dashed rgba(255,255,255,.25);
+  padding-bottom:2px; margin-right:14px;
+}
+
+/* ===== RATIO para TODAS AS TELAS ===== */
+/* ultrawide (bem largos) */
+@media (min-width:1600px){
+  :root{ --shot-ratio: var(--ratio-ultrawide); }
+}
+/* tablets */
+@media (max-width:980px){
+  :root{ --shot-ratio: var(--ratio-tablet); }
+  .case-section,
+  .case-section:nth-child(even){ grid-template-columns:1fr; }
+  .case-section .media,
+  .case-section .text-box{order:initial}
+}
+/* phones comuns */
+@media (max-width:640px){
+  :root{ --shot-ratio: var(--ratio-phone); }
+  .wrap{ padding:18px }
+  .case-section{ gap:14px; margin:22px 0 30px }
+  .media{ grid-template-columns: 1fr; }
+  .caption{ font-size:.75rem }
+  /* força ordem: imagens primeiro */
+  .case-section:nth-child(odd) .media,
+  .case-section:nth-child(even) .media{ order: 1; }
+  .case-section:nth-child(odd) .text-box,
+  .case-section:nth-child(even) .text-box{ order: 2; }
+}
+/* phones muito estreitos */
+@media (max-width:420px){
+  :root{ --shot-ratio: var(--ratio-phone-s); }
+}
+/* telas baixas em landscape (notebooks 11", iPhone deitado, etc.) */
+@media (orientation:landscape) and (max-height:520px){
+  :root{ --shot-ratio: var(--ratio-landscape); }
+}
+
+footer{ margin:48px 0 16px; opacity:.6; font-size:.9rem }
+
+/* lightbox */
+.lightbox{
+  position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+  background: rgba(0,0,0,.8); z-index:999;
+}
+.lightbox.open{ display:flex }
+.lightbox img{
+  max-width: 92vw; max-height: 88vh; border-radius:14px;
+  border:2px solid var(--c1); box-shadow:0 0 28px var(--glow);
+}
+.lightbox .close{
+  position:absolute; top:16px; right:16px; font-size:28px; line-height:1;
+  background:transparent; border:none; color:#fff; cursor:pointer;
+  padding:8px 10px;
+}
