@@ -851,11 +851,33 @@ function openWhatsApp() {
     }
   });
 })();
+     // Seletores
+  const btnMenu = document.querySelector('.menu-toggle');
+  const backdrop = document.querySelector('.nav-backdrop');
+  const body = document.body;
+
+  // Abre/fecha menu
+  function toggleMenu(force) {
+    const isOpen = typeof force === "boolean" ? force : !body.classList.contains("menu-open");
+    body.classList.toggle("menu-open", isOpen);
+  }
+
+  // Clique no botão → abre/fecha
+  btnMenu.addEventListener("click", () => toggleMenu());
+
+  // Clique no backdrop → fecha
+  backdrop.addEventListener("click", () => toggleMenu(false));
+
+  // Fecha se clicar em algum link do menu
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener("click", () => toggleMenu(false));
+  });
     
   </script>
 </body>
 
 </html>
+
 
 
 
