@@ -12,116 +12,218 @@
   <!------------------------------------ CSS ---------------------->
   <style>
 :root{
+  /* ===== Tema base ===== */
   --bg1:#06070b; --bg2:#091026; --fg:#ffffff;
   --c1:#00f7ff; --c2:#ff3bd4; --glow:rgba(0,247,255,0.35);
 
-  /* razões base */
-  --ratio-ultrawide: 5 / 6;    /* monitores muito largos */
-  --ratio-desktop:   4 / 5;    /* desktops/laptops */
-  --ratio-tablet:    3 / 4;    /* tablets */
-  --ratio-phone:     9 / 16;   /* celulares padrão */
-  --ratio-phone-s:  10 / 19;   /* celulares muito estreitos */
-  --ratio-landscape:16 / 9;    /* telas baixas em landscape */
+  /* acentos extras para efeitos */
+  --c3:#00ffa3;
+
+  /* proporções base */
+  --ratio-ultrawide: 5/6;
+  --ratio-desktop:   4/5;
+  --ratio-tablet:    3/4;
+  --ratio-phone:     9/16;
+  --ratio-phone-s:  10/19;
+  --ratio-landscape:16/9;
 
   /* variável ÚNICA usada nos cards */
   --shot-ratio: var(--ratio-desktop);
+
+  /* FX */
+  --blur: 12px;
+  --shadow-1: 0 12px 30px rgba(0,0,0,.45);
+  --shadow-2: 0 18px 48px rgba(0,0,0,.58);
+
+  /* Tempo */
+  --t-fast:.18s; --t:.28s; --t-slow:.6s;
+
+  /* Container */
+  --wrap:1100px;
 }
 
+/* =========================
+   Base + Fundo (grade + aurora)
+   ========================= */
 *{box-sizing:border-box}
+html,body{height:100%}
 body{
-  background: linear-gradient(180deg,var(--bg1),var(--bg2));
+  background:
+    radial-gradient(1000px 700px at 10% -10%, rgba(0,247,255,.10), transparent 60%),
+    radial-gradient(900px 700px at 120% 10%, rgba(255,59,212,.12), transparent 60%),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
   color:var(--fg);
   font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
   margin:0; padding:0; text-align:center;
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
 }
+
+/* grade cibernética de fundo */
+body::before{
+  content:"";
+  position:fixed; inset:0; z-index:-2;
+  background:
+    linear-gradient(transparent 96%, rgba(0,247,255,.08) 98%),
+    linear-gradient(90deg, transparent 96%, rgba(0,247,255,.08) 98%);
+  background-size: 42px 42px, 42px 42px;
+  mask-image: radial-gradient(circle at 50% 30%, rgba(0,0,0,.9), rgba(0,0,0,0) 70%);
+  animation: gridDrift 18s linear infinite;
+}
+@keyframes gridDrift{
+  0%{ background-position: 0 0, 0 0; }
+  100%{ background-position: 84px 84px, 84px 84px; }
+}
+
+/* aurora suave */
+body::after{
+  content:"";
+  position:fixed; inset:-30% -20% auto -20%; height:60%;
+  z-index:-1; filter: blur(60px); opacity:.35;
+  background: conic-gradient(from 180deg at 50% 50%,
+             rgba(0,247,255,.25), rgba(255,59,212,.15), rgba(0,255,163,.15), rgba(0,247,255,.25));
+  mix-blend-mode: screen;
+  animation: aurora 12s ease-in-out infinite alternate;
+}
+@keyframes aurora{
+  0%{ transform: translateY(-6%) rotate(-2deg) scale(1.02); }
+  100%{ transform: translateY(6%) rotate(2deg) scale(0.98); }
+}
+
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+
+/* =========================
+   Header
+   ========================= */
 header{
-  background:rgba(0,0,0,.65);
+  background:linear-gradient(180deg, rgba(0,0,0,.65), rgba(0,0,0,.35));
   padding:28px 16px;
-  border-bottom:1px solid rgba(255,255,255,.06);
-  position:sticky; top:0; backdrop-filter: blur(8px);
-  z-index:10;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  position:sticky; top:0; z-index:10;
+  backdrop-filter: blur(var(--blur));
 }
-.wrap{max-width:1100px; margin:auto; padding:24px}
+.wrap{max-width:var(--wrap); margin:auto; padding:24px}
+
 h1{
   margin:0 0 6px;
   font-size:clamp(22px,3vw,36px);
   background:linear-gradient(90deg,var(--c1),var(--c2));
   -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  text-shadow: 0 0 22px rgba(0,247,255,.15);
 }
-.subtitle{opacity:.8; margin:0}
+.subtitle{opacity:.85; margin:0}
 
-/* seção do case */
+/* =========================
+   Seção de Case
+   ========================= */
 .case-section{
   display:grid;
   grid-template-columns: 1.1fr .9fr;
   gap:22px;
   align-items:stretch;
   margin:34px 0 44px;
+  position:relative; isolation:isolate;
 }
-/* alterna a ordem a cada seção par */
+.case-section::before{
+  content:"";
+  position:absolute; inset:-1px;
+  border-radius:18px;
+  background:
+    radial-gradient(600px 240px at -10% -10%, rgba(0,247,255,.10), transparent 60%),
+    radial-gradient(600px 240px at 110% 110%, rgba(255,59,212,.12), transparent 60%);
+  opacity:.5; pointer-events:none; z-index:-1;
+}
+
+/* alterna ordem a cada par */
 .case-section:nth-child(even){ grid-template-columns: .9fr 1.1fr; }
 .case-section:nth-child(even) .media{order:2}
 .case-section:nth-child(even) .text-box{order:1}
 
-/* dupla de imagens */
+/* =========================
+   Dupla de imagens
+   ========================= */
 .media{
   display:grid;
   grid-template-columns: 1fr 1fr;
   gap:14px;
 }
 .shot{
-  position:relative; overflow:hidden; border-radius:12px;
-  border:2px solid var(--c1);
-  box-shadow:0 0 22px var(--glow);
-  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
-  cursor: zoom-in;
+  position:relative; overflow:hidden; border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
   background:rgba(255,255,255,.02);
+  box-shadow: var(--shadow-1);
+  transition: transform var(--t), box-shadow var(--t), border-color var(--t), filter var(--t);
+  cursor: zoom-in;
+  isolation:isolate;
+}
+.shot::before{
+  content:"";
+  position:absolute; inset:-1px; border-radius:inherit;
+  background: conic-gradient(from 0deg, rgba(0,247,255,.35), rgba(255,59,212,.0) 30%, rgba(0,255,163,.35), rgba(0,247,255,.35));
+  filter: blur(18px); opacity:.18; z-index:-1;
 }
 .shot:hover{
-  transform: translateY(-2px);
-  box-shadow:0 0 28px rgba(255,59,212,.45);
-  border-color: var(--c2);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-2);
+  border-color: color-mix(in srgb, var(--c1) 40%, white 60%);
+  filter:saturate(1.08);
 }
-/* 👉 todas as telas usam a MESMA variável */
+/* ratio único para todas as telas */
 .shot img{
-  width:100%; height:100%; display:block; object-fit:cover;
+  width:100%; height:100%; object-fit:cover;
   aspect-ratio: var(--shot-ratio);
+  transform: translateZ(0);
 }
 .caption{
   position:absolute; left:8px; bottom:8px;
   background:rgba(0,0,0,.55);
   padding:6px 10px; border-radius:999px;
   font-size:.8rem; backdrop-filter: blur(6px);
-  border:1px solid rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.16);
 }
 
-/* caixa de texto destacada */
+/* =========================
+   Caixa de texto destacada
+   ========================= */
 .text-box{
-  background: rgba(255,255,255,0.05);
-  border: 2px solid transparent;
-  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
+  border-radius: 16px;
   padding: 20px 18px;
   text-align:left;
-  box-shadow: 0 0 22px var(--glow);
-  position:relative;
-  isolation:isolate;
-  border-image: linear-gradient(90deg,var(--c1),var(--c2)) 1;
+  position:relative; isolation:isolate;
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow: var(--shadow-1);
+}
+.text-box::before{
+  /* halo neon suave */
+  content:"";
+  position:absolute; inset:-1px; border-radius:inherit;
+  background: conic-gradient(from 0deg, rgba(0,247,255,.28), rgba(255,59,212,.0) 30%, rgba(0,255,163,.28), rgba(0,247,255,.28));
+  filter: blur(22px); opacity:.18; z-index:-1;
 }
 .text-box::after{
+  /* brilho respirando bem leve */
   content:"";
-  position:absolute; inset:-1.5px;
-  border-radius:14px;
+  position:absolute; inset:-2px; border-radius:inherit;
   pointer-events:none;
-  box-shadow: 0 0 38px rgba(0,247,255,.22);
-  z-index:-1;
+  box-shadow: 0 0 38px var(--glow);
+  opacity:.6;
+  animation: breathe 3.6s ease-in-out infinite;
 }
+@keyframes breathe{
+  0%,100%{ opacity:.35 }
+  50%    { opacity:.7  }
+}
+
 .kicker{
-  font-size:.8rem; letter-spacing:.18em; text-transform:uppercase;
-  color:var(--c1); opacity:.9; margin:0 0 6px;
+  font-size:.78rem; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--c1); opacity:.9; margin:0 0 6px; font-weight:800;
 }
 .title{
-  font-weight:800; margin:0 0 10px; line-height:1.15;
+  font-weight:900; margin:0 0 10px; line-height:1.15;
   font-size: clamp(18px,2.2vw,26px);
+  text-shadow: 0 0 16px rgba(0,247,255,.15);
 }
 .desc{opacity:.95; line-height:1.7; margin:0 0 14px}
 .highlight{ color: var(--c2); text-shadow: 0 0 12px rgba(255,59,212,.8); }
@@ -131,6 +233,7 @@ h1{
 .chip{
   font-size:.78rem; padding:6px 10px; border-radius:999px;
   border:1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.06);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
 }
 .metrics{
   display:flex; gap:14px; flex-wrap:wrap; margin-top:6px;
@@ -138,19 +241,44 @@ h1{
 .metric{
   background: linear-gradient(90deg, rgba(0,247,255,.12), rgba(255,59,212,.12));
   border:1px solid rgba(255,255,255,.14);
-  padding:10px 12px; border-radius:10px; min-width:120px;
+  padding:10px 12px; border-radius:12px; min-width:120px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.03);
 }
-.metric b{display:block; font-size:1.1rem}
+.metric b{display:block; font-size:1.1rem; letter-spacing:.2px}
 .links{ margin-top:12px }
 .links a{
-  color:var(--fg); text-decoration:none; font-weight:600;
+  font-weight:700;
   background: linear-gradient(90deg,var(--c1),var(--c2));
   -webkit-background-clip:text; -webkit-text-fill-color:transparent;
   border-bottom:1px dashed rgba(255,255,255,.25);
   padding-bottom:2px; margin-right:14px;
+  transition: filter var(--t);
+}
+.links a:hover{ filter: brightness(1.08) }
+
+/* =========================
+   Lightbox
+   ========================= */
+.lightbox{
+  position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+  background: rgba(0,0,0,.82); z-index:999;
+  backdrop-filter: blur(6px);
+}
+.lightbox.open{ display:flex }
+.lightbox img{
+  max-width: 92vw; max-height: 88vh; border-radius:16px;
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow: 0 0 28px var(--glow), var(--shadow-2);
+}
+.lightbox .close{
+  position:absolute; top:16px; right:16px; font-size:28px; line-height:1;
+  background:transparent; border:none; color:#fff; cursor:pointer;
+  padding:8px 10px; filter: drop-shadow(0 2px 8px rgba(0,0,0,.6));
 }
 
-/* ===== RATIO para TODAS AS TELAS ===== */
+/* =========================
+   RATIO para todas as telas
+   ========================= */
 /* ultrawide (bem largos) */
 @media (min-width:1600px){
   :root{ --shot-ratio: var(--ratio-ultrawide); }
@@ -170,7 +298,7 @@ h1{
   .case-section{ gap:14px; margin:22px 0 30px }
   .media{ grid-template-columns: 1fr; }
   .caption{ font-size:.75rem }
-  /* força ordem: imagens primeiro */
+  /* força imagens primeiro */
   .case-section:nth-child(odd) .media,
   .case-section:nth-child(even) .media{ order: 1; }
   .case-section:nth-child(odd) .text-box,
@@ -180,29 +308,28 @@ h1{
 @media (max-width:420px){
   :root{ --shot-ratio: var(--ratio-phone-s); }
 }
-/* telas baixas em landscape (notebooks 11", iPhone deitado, etc.) */
+/* telas baixas em landscape */
 @media (orientation:landscape) and (max-height:520px){
   :root{ --shot-ratio: var(--ratio-landscape); }
 }
 
-footer{ margin:48px 0 16px; opacity:.6; font-size:.9rem }
+/* =========================
+   Footer
+   ========================= */
+footer{ margin:48px 0 16px; opacity:.65; font-size:.9rem }
 
-/* lightbox */
-.lightbox{
-  position:fixed; inset:0; display:none; align-items:center; justify-content:center;
-  background: rgba(0,0,0,.8); z-index:999;
+/* =========================
+   Acessibilidade & Motion
+   ========================= */
+:focus-visible{
+  outline: 3px solid color-mix(in srgb, var(--c2) 70%, white 30%);
+  outline-offset: 3px;
 }
-.lightbox.open{ display:flex }
-.lightbox img{
-  max-width: 92vw; max-height: 88vh; border-radius:14px;
-  border:2px solid var(--c1); box-shadow:0 0 28px var(--glow);
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  body::before, body::after{ animation: none !important; }
 }
-.lightbox .close{
-  position:absolute; top:16px; right:16px; font-size:28px; line-height:1;
-  background:transparent; border:none; color:#fff; cursor:pointer;
-  padding:8px 10px;
-}
-    
   </style>
 
 </head>
