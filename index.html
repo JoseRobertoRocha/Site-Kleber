@@ -903,11 +903,46 @@ function openWhatsApp() {
   document.querySelectorAll('.nav-links a').forEach(link => {
     link.addEventListener("click", () => toggleMenu(false));
   });
+(function(){
+  const btn = document.querySelector('.menu-toggle');
+  const nav = document.getElementById('site-nav');
+  let backdrop = document.querySelector('.nav-backdrop');
+
+  // estado sempre fechado ao carregar
+  document.body.classList.remove('menu-open');
+
+  if (!backdrop) {
+    backdrop = document.createElement('div');
+    backdrop.className = 'nav-backdrop';
+    document.body.appendChild(backdrop);
+  }
+
+  const open = () => {
+    document.body.classList.add('menu-open');
+    btn?.setAttribute('aria-expanded','true');
+    nav?.setAttribute('tabindex','-1');
+    nav?.focus();
+  };
+  const close = () => {
+    document.body.classList.remove('menu-open');
+    btn?.setAttribute('aria-expanded','false');
+  };
+  const isOpen = () => document.body.classList.contains('menu-open');
+
+  btn?.addEventListener('click', () => isOpen() ? close() : open());
+  backdrop.addEventListener('click', close);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && isOpen()) close(); });
+
+  // Se virar desktop, fecha
+  const mq = window.matchMedia('(min-width:769px)');
+  mq.addEventListener('change', e => { if (e.matches) close(); });
+})();
     
   </script>
 </body>
 
 </html>
+
 
 
 
