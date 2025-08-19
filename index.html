@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <!-----------------------------------------------------------------------estilo da pagina------------------------------------------>
   <style>
- :root{
+:root{
   /* Base */
   --bg-1:#060b14; --bg-2:#0a1628;
   --panel:rgba(255,255,255,0.04);
@@ -29,16 +29,16 @@
   --max-width:1200px;
   --header-h:68px;
 
-  /* Proporções base */
-  --ratio-ultrawide: 5/6;   /* monitores muito largos */
-  --ratio-desktop:   4/5;   /* desktops/laptops */
-  --ratio-laptop:   16/10;  /* notebooks 1366x768/1600x900 */
-  --ratio-tablet:    3/4;   /* tablets em portrait */
-  --ratio-phone:     9/16;  /* celulares em portrait */
-  --ratio-phone-s:  10/19;  /* celulares muito estreitos */
-  --ratio-land:     16/9;   /* paisagem (landscape) */
+  /* Proporções base (catálogo) */
+  --ratio-ultrawide: 5/6;   /* 21:9+ com respiro vertical */
+  --ratio-desktop:   4/5;   /* vertical elegante para desktop */
+  --ratio-laptop:   16/10;  /* notebooks comuns */
+  --ratio-tablet:    3/4;   /* tablets portrait */
+  --ratio-phone:     9/16;  /* phones altos */
+  --ratio-phone-s:  10/19;  /* phones muito altos/estreitos */
+  --ratio-land:     16/9;   /* landscape clássico */
 
-  /* Proporção ativa (muda nos media queries) */
+  /* Proporção ativa (ajustada pelos media queries) */
   --ratio: 4/5;
 
   /* FX */
@@ -57,39 +57,63 @@
 
 /* ===== Adaptação por largura ===== */
 @media (min-width:1400px){
-  :root{ --container:1200px; --ratio: var(--ratio-desktop); }
+  :root{ --container:1200px; --ratio: var(--ratio-desktop) !important; }
 }
 @media (max-width:1280px){
-  :root{ --container:1060px; --ratio: var(--ratio-desktop); }
+  :root{ --container:1060px; --ratio: var(--ratio-desktop) !important; }
 }
 @media (max-width:1060px){
-  :root{ --container:960px; --ratio: var(--ratio-tablet); }
+  :root{ --container:960px; --ratio: var(--ratio-tablet) !important; }
 }
 @media (max-width:920px){
-  :root{ --container:860px; --ratio: var(--ratio-tablet); }
+  :root{ --container:860px; --ratio: var(--ratio-tablet) !important; }
 }
 @media (max-width:768px){
-  :root{ --container:720px; --ratio: var(--ratio-phone); }
+  :root{ --container:720px; --ratio: var(--ratio-phone) !important; }
 }
 @media (max-width:640px){
-  :root{ --container:600px; --ratio: var(--ratio-phone); }
+  :root{ --container:600px; --ratio: var(--ratio-phone) !important; }
 }
 @media (max-width:380px){
-  :root{ --container:340px; --ratio: var(--ratio-phone-s); }
+  :root{ --container:340px; --ratio: var(--ratio-phone-s) !important; }
 }
 
-/* ===== Adaptação por orientação/proporção ===== */
-@media (orientation: landscape) and (max-height: 700px){
-  :root{ --header-h:60px; --ratio: var(--ratio-land); }
+/* ===== Adaptação por orientação/proporção (força a razão ideal) ===== */
+/* Ultrawide (>= 21:9) */
+@media (min-aspect-ratio: 21/9){
+  :root{ --ratio: var(--ratio-ultrawide) !important; }
 }
-@media (min-aspect-ratio: 21/9){       /* ultrawide 2.33:1 */
-  :root{ --ratio: var(--ratio-ultrawide); }
+/* Landscape comum (16:9 a <21:9) */
+@media (orientation: landscape) and (max-aspect-ratio: 21/9) and (min-aspect-ratio: 16/10){
+  :root{ --ratio: var(--ratio-land) !important; }
 }
-@media (max-aspect-ratio: 10/16){      /* phones mais altos */
-  :root{ --ratio: var(--ratio-phone); }
+/* Laptops 16:10 */
+@media (min-aspect-ratio: 16/10) and (max-aspect-ratio: 17/10){
+  :root{ --ratio: var(--ratio-laptop) !important; }
 }
+/* Tablets (próximo de 4:3) */
+@media (max-aspect-ratio: 4/3) and (min-aspect-ratio: 1/1){
+  :root{ --ratio: var(--ratio-tablet) !important; }
+}
+/* Phones muito altos (<= 10:19 ~ 9:19.5) */
+@media (max-aspect-ratio: 10/19){
+  :root{ --ratio: var(--ratio-phone-s) !important; }
+}
+/* Phones altos (<= 9:16) */
+@media (max-aspect-ratio: 9/16){
+  :root{ --ratio: var(--ratio-phone) !important; }
+}
+/* Landscape em telas menores */
 @media (orientation: landscape) and (max-width: 920px){
-  :root{ --ratio: var(--ratio-land); }
+  :root{ --ratio: var(--ratio-land) !important; }
+}
+
+/* ===== Ajustes por altura útil (notebooks/Chromebooks baixos) ===== */
+@media (max-height: 700px){
+  :root{ --header-h:60px; }
+}
+@media (max-height: 580px){
+  :root{ --header-h:56px; }
 }
 
 /* =========================
@@ -112,15 +136,18 @@ body{
   padding-right: env(safe-area-inset-right, 0);
 }
 
-/* Height moderna (evita “salto” de barra mobile) */
-.fit-screen{
-  min-height: 100vh;
-}
+/* Altura moderna (evita “salto” da barra mobile) */
+.fit-screen{ min-height: 100vh; }
 @supports (height: 100dvh){
   .fit-screen{ min-height: calc(100dvh - var(--header-h)); }
 }
+/* Lock total (ocupar viewport inteiro) */
+.vh-lock{ min-height: 100vh; }
+@supports (height: 100dvh){
+  .vh-lock{ min-height: 100dvh; }
+}
 
-/* Grade cibernética animada no fundo */
+/* Grade cibernética animada */
 body::before{
   content:"";
   position:fixed; inset:0; z-index:-2;
@@ -135,8 +162,7 @@ body::before{
   0%{ background-position: 0 0, 0 0; }
   100%{ background-position: 80px 80px, 80px 80px; }
 }
-
-/* Aurora suave */
+/* Aurora */
 body::after{
   content:"";
   position:fixed; inset:-30% -20% auto -20%; height:60%;
@@ -164,7 +190,7 @@ img{display:block;max-width:100%;}
 .muted{color:var(--muted)}
 .muted-blurb{ color:var(--muted);font-size:0.95rem;margin-top:6px;line-height:1.5 }
 
-/* Ratio utilitário (controlado por --ratio) */
+/* Ratio utilitário — guiado por --ratio */
 .ratio-box{
   width:100%;
   aspect-ratio: var(--ratio);
@@ -184,6 +210,10 @@ img{display:block;max-width:100%;}
   opacity:.08;
   z-index:-1;
 }
+
+/* ===== Utilitário para "forçar" a razão ativa em um bloco ===== */
+.force-ratio{ aspect-ratio: var(--ratio) !important; }
+.force-ratio > *{ max-height:100%; }
 
 /* =========================
    HEADER + MENU
@@ -253,7 +283,7 @@ img{display:block;max-width:100%;}
 .nav-links a:focus-visible::after,
 .nav-links a.active::after{ transform:scaleX(1); }
 
-/* CTA primária do header com brilho */
+/* CTA do header */
 .cta-btn{
   position:relative; overflow:hidden;
   background:linear-gradient(90deg,var(--accent-a),var(--accent-b));
@@ -460,7 +490,7 @@ section.content{
   color:#04121a;font-weight:900;margin:auto
 }
 
-/* Métricas/pills: quebram bem em telas estreitas */
+/* Métricas/pills */
 .metric-row{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:10px }
 .metric{ background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.10); border-radius:14px; padding:10px 12px; min-width:120px }
 .metric-num{ font-weight:900; font-size:clamp(1rem, 2.2vw, 1.12rem); letter-spacing:.3px }
@@ -571,7 +601,6 @@ section.content{
   *{ animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
   body::before, body::after{ animation: none !important; }
 }
-     
    </style>
 </head>
 <body>
@@ -1060,6 +1089,7 @@ function openWhatsApp() {
 </body>
 
 </html>
+
 
 
 
