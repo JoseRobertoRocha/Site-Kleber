@@ -452,6 +452,74 @@ section.content{padding:48px 20px; position:relative; isolation:isolate;}
   from { transform: scale(.96) translateY(2px); opacity:0; }
   to   { transform: scale(1) translateY(0);     opacity:1; }
 }
+    /* ===== Centrar o layout e tornar os paddings fluidos ===== */
+:root{
+  --container: 1100px;                   /* largura máxima do miolo */
+  --gutter: clamp(16px, 4vw, 28px);      /* respiro lateral responsivo */
+}
+
+.wrap{
+  width: min(var(--container), 100%);    /* nunca passa da tela */
+  margin-inline: auto;                   /* centraliza */
+  padding-inline: var(--gutter);         /* respiro lateral */
+}
+
+/* evita qualquer “arrasto” lateral por segurança */
+html, body{ width:100%; overflow-x:hidden; }
+
+/* ===== HERO responsivo e centralizado ===== */
+.hero{ 
+  padding-block: clamp(28px, 6vw, 64px);
+}
+.hero-grid{
+  display:grid;
+  grid-template-columns: 1fr;            /* mobile primeiro */
+  gap: clamp(16px, 4vw, 36px);
+  justify-items: center;                 /* centra os itens na coluna */
+}
+@media (min-width: 900px){
+  .hero-grid{
+    grid-template-columns: minmax(280px, 360px) minmax(0, 1fr); /* foto + texto */
+  }
+}
+
+/* componentização de centralização para as grids */
+.services-grid,
+.cards-grid,
+.contact-grid{
+  justify-content: center;     /* centraliza a distribuição */
+  justify-items: center;       /* centraliza os cards/itens */
+  margin-inline: auto;
+}
+
+/* cards não “grudam” nas bordas em telas muito pequenas */
+.cards-grid{ gap: clamp(12px, 3vw, 18px); }
+.services-grid{ gap: clamp(12px, 3vw, 18px); }
+
+/* avatar e textos do hero com limites fluidos */
+.profile{ max-width: min(520px, 100%); }
+.avatar{ width: min(180px, 48vw); }
+
+/* títulos e parágrafos com largura confortável */
+.hero-intro{ max-width: 70ch; margin-inline:auto; text-align:left; }
+@media (max-width: 640px){
+  .hero-intro{ text-align:left; }  /* mantém leitura natural no mobile */
+}
+
+/* ===== Menu móvel: garantir que não “puxe” o layout quando fechado ===== */
+@media (max-width:768px){
+  .nav-links{
+    transform: translateX(100%);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  body.menu-open .nav-links{
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
 
      
    </style>
@@ -942,6 +1010,7 @@ function openWhatsApp() {
 </body>
 
 </html>
+
 
 
 
