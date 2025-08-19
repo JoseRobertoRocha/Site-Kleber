@@ -144,7 +144,7 @@ a{color:inherit;text-decoration:none}
   pointer-events:none;
 }
 
-/* Mobile drawer */
+/* Mobile drawer — escondido por padrão */
 @media (max-width:768px){
   .menu-toggle{ display:block; }
 
@@ -155,13 +155,44 @@ a{color:inherit;text-decoration:none}
     flex-direction:column; align-items:flex-start; gap:0;
     padding-top:calc(var(--header-h) + 12px);
     padding-inline:20px; padding-bottom:16px;
-    transform:translateX(100%);            /* 100% fora da tela */
-    transition:transform .30s ease;
+
+    /* fica TOTALMENTE escondido até abrir */
+    transform:translateX(100%);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+
+    transition:transform .30s ease, opacity .20s ease;
     box-shadow:-4px 0 20px rgba(0,0,0,0.5);
     overscroll-behavior:contain;
     touch-action:pan-y;
-    contain:layout paint;                  /* evita vazamento visual */
+    contain:layout paint;
   }
+
+  /* Quando aberto (classe no <body>) */
+  body.menu-open .nav-links{
+    transform:translateX(0);
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+  }
+
+  /* Backdrop */
+  .nav-backdrop{
+    position:fixed; inset:0; z-index:98;
+    background:rgba(0,0,0,.55);
+    opacity:0; visibility:hidden; pointer-events:none;
+    transition:opacity .2s ease;
+  }
+  body.menu-open .nav-backdrop{
+    opacity:1; visibility:visible; pointer-events:auto;
+  }
+}
+
+/* Desktop mantém normal */
+@media (min-width:769px){
+  .nav-links{ position:static; transform:none; opacity:1; visibility:visible; pointer-events:auto; height:auto; width:auto; padding:0; }
+}
 
   /* Quando aberto (classe aplicada no <body>) */
   body.menu-open .nav-links{ transform:translateX(0); }
@@ -877,6 +908,7 @@ function openWhatsApp() {
 </body>
 
 </html>
+
 
 
 
