@@ -17,7 +17,7 @@
   /* Acentos (neon) */
   --accent-a:#00e1ff; 
   --accent-b:#6b5bff; 
-  --accent-c:#00ffa3; /* acento secundário para microdetalhes */
+  --accent-c:#00ffa3;
 
   /* Texto */
   --muted:#a9b0c0;
@@ -29,10 +29,16 @@
   --max-width:1200px;
   --header-h:68px;
 
-  /* Proporções */
-  --ratio-desktop: 4/5;
-  --ratio-tablet: 3/4;
-  --ratio-phone: 9/16;
+  /* Proporções base */
+  --ratio-ultrawide: 5/6;   /* monitores muito largos */
+  --ratio-desktop:   4/5;   /* desktops/laptops */
+  --ratio-laptop:   16/10;  /* notebooks 1366x768/1600x900 */
+  --ratio-tablet:    3/4;   /* tablets em portrait */
+  --ratio-phone:     9/16;  /* celulares em portrait */
+  --ratio-phone-s:  10/19;  /* celulares muito estreitos */
+  --ratio-land:     16/9;   /* paisagem (landscape) */
+
+  /* Proporção ativa (muda nos media queries) */
   --ratio: 4/5;
 
   /* FX */
@@ -49,8 +55,42 @@
   --gutter: clamp(16px, 4vw, 28px);
 }
 
-@media (max-width:1060px){ :root{ --ratio: var(--ratio-tablet); } }
-@media (max-width:640px){ :root{ --ratio: var(--ratio-phone); } }
+/* ===== Adaptação por largura ===== */
+@media (min-width:1400px){
+  :root{ --container:1200px; --ratio: var(--ratio-desktop); }
+}
+@media (max-width:1280px){
+  :root{ --container:1060px; --ratio: var(--ratio-desktop); }
+}
+@media (max-width:1060px){
+  :root{ --container:960px; --ratio: var(--ratio-tablet); }
+}
+@media (max-width:920px){
+  :root{ --container:860px; --ratio: var(--ratio-tablet); }
+}
+@media (max-width:768px){
+  :root{ --container:720px; --ratio: var(--ratio-phone); }
+}
+@media (max-width:640px){
+  :root{ --container:600px; --ratio: var(--ratio-phone); }
+}
+@media (max-width:380px){
+  :root{ --container:340px; --ratio: var(--ratio-phone-s); }
+}
+
+/* ===== Adaptação por orientação/proporção ===== */
+@media (orientation: landscape) and (max-height: 700px){
+  :root{ --header-h:60px; --ratio: var(--ratio-land); }
+}
+@media (min-aspect-ratio: 21/9){       /* ultrawide 2.33:1 */
+  :root{ --ratio: var(--ratio-ultrawide); }
+}
+@media (max-aspect-ratio: 10/16){      /* phones mais altos */
+  :root{ --ratio: var(--ratio-phone); }
+}
+@media (orientation: landscape) and (max-width: 920px){
+  :root{ --ratio: var(--ratio-land); }
+}
 
 /* =========================
    BASE + FUNDO ANIMADO
@@ -68,6 +108,16 @@ body{
   overflow-x:hidden;
   scroll-behavior:smooth;
   text-align:center;
+  padding-left: env(safe-area-inset-left, 0);
+  padding-right: env(safe-area-inset-right, 0);
+}
+
+/* Height moderna (evita “salto” de barra mobile) */
+.fit-screen{
+  min-height: 100vh;
+}
+@supports (height: 100dvh){
+  .fit-screen{ min-height: calc(100dvh - var(--header-h)); }
 }
 
 /* Grade cibernética animada no fundo */
@@ -114,7 +164,7 @@ img{display:block;max-width:100%;}
 .muted{color:var(--muted)}
 .muted-blurb{ color:var(--muted);font-size:0.95rem;margin-top:6px;line-height:1.5 }
 
-/* Ratio utilitário */
+/* Ratio utilitário (controlado por --ratio) */
 .ratio-box{
   width:100%;
   aspect-ratio: var(--ratio);
@@ -148,6 +198,11 @@ img{display:block;max-width:100%;}
   padding:12px 20px; min-height:var(--header-h);
   display:flex; align-items:center; justify-content:space-between; gap:12px
 }
+@media (max-height:680px){
+  :root{ --header-h:60px }
+  .nav-row{ padding:10px 16px }
+}
+
 .brand{display:flex;align-items:center;gap:12px}
 .logo{
   width:46px;height:46px;border-radius:12px;
@@ -272,7 +327,10 @@ img{display:block;max-width:100%;}
 /* =========================
    HERO — Card de Perfil + Intro
    ========================= */
-.hero{ padding-block: clamp(28px, 6vw, 64px); position:relative; isolation:isolate; }
+.hero{ 
+  padding-block: clamp(24px, 5vw, 64px);
+  position:relative; isolation:isolate;
+}
 .hero-grid{
   display:grid;
   grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
@@ -284,7 +342,8 @@ img{display:block;max-width:100%;}
 
 .profile{
   display:flex; flex-direction:column; align-items:center; gap:14px;
-  padding:26px; border-radius:18px;
+  padding: clamp(18px, 3vw, 26px);
+  border-radius:18px;
   background:linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
   border:1px solid rgba(255,255,255,0.08);
   box-shadow: var(--shadow-1);
@@ -351,9 +410,12 @@ img{display:block;max-width:100%;}
 /* =========================
    SEÇÕES
    ========================= */
-section.content{padding:48px 20px; position:relative; isolation:isolate;}
+section.content{
+  padding: clamp(36px, 6vw, 48px) 20px;
+  position:relative; isolation:isolate;
+}
 .section-title{
-  font-size:clamp(1.4rem, 2.6vw, 1.8rem);
+  font-size:clamp(1.3rem, 2.4vw, 1.8rem);
   margin:0 0 18px;
   background:linear-gradient(90deg,var(--accent-a),var(--accent-b));
   -webkit-background-clip:text;color:transparent;
@@ -368,27 +430,13 @@ section.content{padding:48px 20px; position:relative; isolation:isolate;}
   justify-items:center
 }
 .service{
-  padding:18px;border-radius:16px;background:rgba(255,255,255,0.03);
+  padding: clamp(14px, 2.6vw, 18px);
+  border-radius:16px;background:rgba(255,255,255,0.03);
   border:1px solid rgba(255,255,255,0.08);
   transition:transform var(--t), box-shadow var(--t), border-color var(--t);
   width:100%; max-width:480px; position:relative; overflow:hidden;
   box-shadow: var(--shadow-1);
 }
-.service::after{
-  content:"";
-  position:absolute; inset:0; border-radius:inherit;
-  background:
-    radial-gradient(400px 200px at -10% -10%, rgba(0,225,255,.10), transparent 60%),
-    radial-gradient(400px 200px at 110% 110%, rgba(107,91,255,.12), transparent 60%);
-  opacity:.6; pointer-events:none;
-}
-.service:hover{
-  transform:translateY(-8px);
-  box-shadow: var(--shadow-2);
-  border-color: color-mix(in srgb, var(--accent-a) 30%, white 70%);
-}
-.service h3{margin:6px 0;color:#fff; letter-spacing:.3px}
-.service p{margin:6px 0;color:var(--muted);font-size:0.98rem}
 
 /* Cards / Cases */
 .cards-grid{
@@ -399,30 +447,24 @@ section.content{padding:48px 20px; position:relative; isolation:isolate;}
 }
 .card{
   background:rgba(255,255,255,0.03);
-  padding:16px;border-radius:16px;
+  padding: clamp(12px, 2.4vw, 16px);
+  border-radius:16px;
   border:1px solid rgba(255,255,255,0.08);
   box-shadow: var(--shadow-1);
   width:100%; max-width:560px; position:relative; overflow:hidden;
 }
-.card::before{
-  content:"";
-  position:absolute; inset:-1px; border-radius:inherit;
-  background: conic-gradient(from 0deg, rgba(0,225,255,.25), rgba(107,91,255,.0) 30%, rgba(0,255,163,.25), rgba(0,225,255,.25));
-  filter: blur(18px); opacity:.14; z-index:-1;
-}
-.card h4{margin:12px 0 8px}
-.card p{color:var(--muted);font-size:0.98rem;margin:0 0 10px}
+
 .tag{
-  display:inline-block;padding:14px 22px;border-radius:999px;
+  display:inline-block;padding:12px 18px;border-radius:999px;
   background:linear-gradient(90deg,var(--accent-a),var(--accent-b));
   color:#04121a;font-weight:900;margin:auto
 }
-.meta{display:block;color:var(--muted);margin-top:6px;font-size:.92rem}
 
+/* Métricas/pills: quebram bem em telas estreitas */
 .metric-row{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-top:10px }
 .metric{ background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.10); border-radius:14px; padding:10px 12px; min-width:120px }
-.metric-num{ font-weight:900; font-size:1.12rem; letter-spacing:.3px }
-.metric-label{ color:var(--muted); font-size:.88rem }
+.metric-num{ font-weight:900; font-size:clamp(1rem, 2.2vw, 1.12rem); letter-spacing:.3px }
+.metric-label{ color:var(--muted); font-size:.9rem }
 
 .pill-group{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap }
 .pill{
@@ -436,13 +478,11 @@ section.content{padding:48px 20px; position:relative; isolation:isolate;}
 /* Contato */
 .contact-grid{ display:grid;gap:18px;justify-items:center }
 .contact-card{
-  padding:18px;border-radius:16px;background:rgba(255,255,255,0.03);
+  padding: clamp(14px, 2.6vw, 18px);
+  border-radius:16px;background:rgba(255,255,255,0.03);
   border:1px solid rgba(255,255,255,0.08);
   width:100%; max-width:560px; box-shadow: var(--shadow-1);
 }
-.contact-list{list-style:none;padding:0;margin:0}
-.contact-list li{margin:8px 0;color:var(--muted)}
-.contact-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 
 /* =========================
    DETAILS animado (cases)
@@ -483,7 +523,6 @@ section.content{padding:48px 20px; position:relative; isolation:isolate;}
 .wa-btn:hover{ transform:translateY(-2px); box-shadow: var(--shadow-2); }
 .wa-btn:active{ transform:translateY(0); filter:brightness(.98); }
 
-/* Glow pulsante */
 .wa-glow{
   position:absolute; inset:-8px; border-radius:20px;
   background: radial-gradient(60% 60% at 50% 50%, rgba(0,225,255,.35), rgba(0,114,255,0));
@@ -1022,6 +1061,7 @@ function openWhatsApp() {
 </body>
 
 </html>
+
 
 
 
