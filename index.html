@@ -601,6 +601,29 @@ section.content{
   *{ animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
   body::before, body::after{ animation: none !important; }
 }
+
+    /* 1) fit-screen flexível */
+.fit-screen{
+  min-block-size: clamp(520px, calc(100dvh - var(--header-h)), 1200px);
+}
+
+/* 2) aspect-ratio só onde precisa */
+section.content{ aspect-ratio:auto !important; }
+.ratio-box{ max-block-size: min(78vh, 1200px); }
+
+/* 3) evitar colapso de margem topo */
+main > *:first-child{ margin-block-start: 0; }
+
+/* 4) overflow lateral = nunca */
+html, body{ overflow-x:hidden; }
+.wrap{ inline-size:100%; max-inline-size: var(--container); }
+
+/* 5) telas com pouca altura */
+@media (max-height:700px){
+  :root{ --header-h:60px; }
+  .ratio-box{ max-block-size:70vh; }
+  .hero{ padding-block: clamp(16px, 3.5vw, 40px); }
+}
    </style>
 </head>
 <body>
@@ -1089,6 +1112,7 @@ function openWhatsApp() {
 </body>
 
 </html>
+
 
 
 
