@@ -5,6 +5,7 @@ function app() {
     sc: false,
     s: 'hero',
     caseOpen: null,
+    hireModalOpen: false,
     cases: [],
     settings: { whatsapp_url: '', instagram_url: '', linkedin_url: '', contact_email: '' },
     contactForm: { name: '', email: '', whatsapp: '', subject: 'novo_projeto', message: '', website: '' },

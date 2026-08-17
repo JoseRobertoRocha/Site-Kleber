@@ -48,9 +48,9 @@
 
     <div class="flex items-center gap-3">
 
-      <a :href="settings.whatsapp_url" class="hidden lg:inline-flex items-center gap-2 shimmer bg-[#FF6B2B] text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-[#FF8F5C] transition-colors">
+      <button type="button" @click="hireModalOpen=true" class="hidden lg:inline-flex items-center gap-2 shimmer bg-[#FF6B2B] text-white text-sm font-medium px-5 py-2 rounded-full hover:bg-[#FF8F5C] transition-colors">
         Contrate-me <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-      </a>
+      </button>
 
       <button @click="mm=!mm" class="lg:hidden w-9 h-9 flex items-center justify-center rounded-full border transition-colors" :class="sc?'border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-200':'border-white/25 text-white'" :aria-expanded="mm" aria-label="Abrir ou fechar menu">
         <svg x-show="!mm" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -71,7 +71,7 @@
       <li><a href="curriculo.html" @click="mm=false" class="flex items-center gap-3 py-3 text-zinc-700 dark:text-zinc-300 hover:text-[#FF6B2B] transition-colors">Currículo</a></li>
       <li><a href="#contact" @click="mm=false" class="flex items-center gap-3 py-3 text-zinc-700 dark:text-zinc-300 hover:text-[#FF6B2B] transition-colors"><span class="journey-num">07</span>Conversar</a></li>
       <li class="pt-3 mt-2 border-t border-zinc-100 dark:border-zinc-900">
-        <a :href="settings.whatsapp_url" @click="mm=false" class="flex items-center justify-center shimmer bg-[#FF6B2B] text-white font-medium text-base px-5 py-3.5 rounded-full">Contrate-me →</a>
+        <button type="button" @click="mm=false; hireModalOpen=true" class="w-full flex items-center justify-center shimmer bg-[#FF6B2B] text-white font-medium text-base px-5 py-3.5 rounded-full">Contrate-me →</button>
       </li>
     </ul>
   </div>
@@ -126,7 +126,7 @@
             Ver cases
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </a>
-          <a href="#contact" class="inline-flex items-center justify-center gap-2 border border-white/20 text-white font-medium px-7 py-3.5 rounded-full hover:bg-white/10 hover:-translate-y-0.5 transition-all text-sm w-full sm:w-auto">Contrate-me</a>
+          <button type="button" @click="hireModalOpen=true" class="inline-flex items-center justify-center gap-2 border border-white/20 text-white font-medium px-7 py-3.5 rounded-full hover:bg-white/10 hover:-translate-y-0.5 transition-all text-sm w-full sm:w-auto">Contrate-me</button>
         </div>
         <div class="reveal d4 flex flex-wrap gap-3 mt-14 pt-8 border-t border-white/10">
           <a :href="settings.instagram_url" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center rounded-full border border-white/15 px-5 py-3 text-sm font-medium text-zinc-300 hover:border-[#FF6B2B] hover:text-[#FF6B2B] transition-colors">Instagram</a>
@@ -626,6 +626,77 @@
             <li class="rounded-lg bg-zinc-50 dark:bg-zinc-800/70 border border-zinc-100 dark:border-zinc-700 px-4 py-3" x-text="a"></li>
           </template>
         </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div x-show="hireModalOpen" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center px-4 py-6" role="dialog" aria-modal="true" aria-labelledby="hire-modal-title" @keydown.escape.window="hireModalOpen=false">
+  <div class="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm" @click="hireModalOpen=false"></div>
+  <div
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0 scale-95"
+    x-transition:enter-end="opacity-100 scale-100"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100 scale-100"
+    x-transition:leave-end="opacity-0 scale-95"
+    class="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-700/60 bg-zinc-900 p-6 md:p-8">
+    <div class="absolute -top-20 -right-20 w-56 h-56 bg-[#FF6B2B]/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+
+    <button type="button" @click="hireModalOpen=false" class="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors" aria-label="Fechar">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+
+    <div class="relative z-10">
+      <p id="hire-modal-title" class="text-xs font-medium text-[#FF6B2B] tracking-[0.25em] uppercase mb-2">Inicie uma conversa</p>
+      <p class="text-sm text-zinc-400 mb-6">Conte um pouco sobre o seu projeto. Sua mensagem cai direto com a nossa equipe.</p>
+
+      <form @submit.prevent="sendContactMessage()" x-show="!contactSent" class="space-y-4">
+        <input type="text" x-model="contactForm.website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true">
+
+        <div>
+          <label for="hire-name" class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-2">Seu nome</label>
+          <input id="hire-name" type="text" x-model="contactForm.name" placeholder="Como podemos chamar você?" maxlength="100" required class="contact-input">
+        </div>
+        <div>
+          <label for="hire-email" class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-2">Seu e-mail</label>
+          <input id="hire-email" type="email" x-model="contactForm.email" placeholder="seuemail@exemplo.com" required class="contact-input">
+        </div>
+        <div>
+          <label for="hire-whatsapp" class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-2">WhatsApp <span class="normal-case text-zinc-600">(opcional)</span></label>
+          <input id="hire-whatsapp" type="tel" x-model="contactForm.whatsapp" placeholder="(11) 99999-9999" maxlength="20" class="contact-input">
+        </div>
+        <div>
+          <label for="hire-subject" class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-2">Assunto</label>
+          <div class="relative">
+            <select id="hire-subject" x-model="contactForm.subject" class="contact-input appearance-none pr-10 cursor-pointer">
+              <template x-for="s in contactSubjects" :key="s.value">
+                <option :value="s.value" x-text="s.label"></option>
+              </template>
+            </select>
+            <svg class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </div>
+        </div>
+        <div>
+          <label for="hire-message" class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-2">Mensagem</label>
+          <textarea id="hire-message" x-model="contactForm.message" placeholder="Conte um pouco sobre o que você precisa..." rows="4" maxlength="2000" required class="contact-input resize-none"></textarea>
+        </div>
+
+        <p x-show="contactError" x-text="contactError" class="text-sm text-rose-400"></p>
+
+        <button type="submit" class="contact-submit" :disabled="contactSending">
+          <span x-text="contactSending ? 'Enviando mensagem...' : 'Enviar mensagem'"></span>
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </button>
+      </form>
+
+      <div x-show="contactSent" x-cloak class="text-center py-10">
+        <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-emerald-500/15 flex items-center justify-center">
+          <svg class="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <p class="text-white font-medium mb-1">Mensagem enviada com sucesso!</p>
+        <p class="text-sm text-zinc-400 mb-6">Entraremos em contato em breve.</p>
+        <button type="button" @click="hireModalOpen=false" class="inline-flex items-center justify-center border border-white/20 text-white font-medium px-6 py-2.5 rounded-full hover:bg-white/10 transition-colors text-sm">Fechar</button>
       </div>
     </div>
   </div>
