@@ -7,7 +7,7 @@ function app() {
     caseOpen: null,
     cases: [],
     settings: { whatsapp_url: '', instagram_url: '', linkedin_url: '', contact_email: '' },
-    contactForm: { name: '', email: '', subject: 'novo_projeto', message: '', website: '' },
+    contactForm: { name: '', email: '', whatsapp: '', subject: 'novo_projeto', message: '', website: '' },
     contactSending: false,
     contactSent: false,
     contactError: '',
@@ -63,6 +63,7 @@ function app() {
 
       const name = this.contactForm.name.trim();
       const email = this.contactForm.email.trim();
+      const whatsapp = this.contactForm.whatsapp.trim();
       const message = this.contactForm.message.trim();
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -72,6 +73,10 @@ function app() {
       }
       if (!emailPattern.test(email)) {
         this.contactError = 'Informe um e-mail válido.';
+        return;
+      }
+      if (whatsapp && whatsapp.replace(/\D/g, '').length < 10) {
+        this.contactError = 'Informe um número de WhatsApp válido (com DDD) ou deixe em branco.';
         return;
       }
       if (message.length < 10) {
@@ -85,9 +90,9 @@ function app() {
 
       this.contactSending = true;
       try {
-        await submitContactMessage({ ...this.contactForm, name, email, message });
+        await submitContactMessage({ ...this.contactForm, name, email, whatsapp, message });
         this.contactSent = true;
-        this.contactForm = { name: '', email: '', subject: 'novo_projeto', message: '', website: '' };
+        this.contactForm = { name: '', email: '', whatsapp: '', subject: 'novo_projeto', message: '', website: '' };
       } catch (err) {
         this.contactError = (err.message && err.message.includes('Aguarde'))
           ? err.message

@@ -388,6 +388,7 @@
                   <span x-show="!m.is_read" class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-[#FF6B2B]/15 text-[#FF6B2B]">Não lida</span>
                 </div>
                 <a class="text-xs text-zinc-400 hover:text-[#FF6B2B] break-all" :href="'mailto:' + m.email" x-text="m.email"></a>
+                <p x-show="m.whatsapp" class="text-xs text-zinc-400" x-text="'WhatsApp: ' + m.whatsapp"></p>
                 <p class="text-xs text-zinc-500 mt-1" x-text="contactSubjectLabel(m.subject)"></p>
               </div>
               <select class="adm-select-sm shrink-0" :value="m.status" @change="updateMessageStatus(m, $event.target.value)">

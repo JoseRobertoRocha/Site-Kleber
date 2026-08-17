@@ -114,6 +114,31 @@ function adminApp() {
         this.session = session;
         if (this.session && wasLoggedOut) this.loadAll();
       });
+
+      // Renovacao proativa: o timer interno do SDK so roda com a aba em
+      // primeiro plano. Checamos a cada 4 min, e de novo assim que a aba
+      // volta a ficar visivel (celular costuma suspender o timer em
+      // segundo plano, o que fazia a sessao "expirar" bem antes de 1h).
+      setInterval(() => this.keepSessionAlive(), 4 * 60 * 1000);
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') this.keepSessionAlive();
+      });
+    },
+
+    async keepSessionAlive() {
+      if (!this.session) return;
+      const { data: { session } } = await window.sb.auth.getSession();
+      if (!session) return;
+      const expiresInSeconds = session.expires_at - Math.floor(Date.now() / 1000);
+      if (expiresInSeconds < 10 * 60) {
+        const { data, error } = await window.sb.auth.refreshSession();
+        if (error) {
+          this.log('error', `Falha ao renovar sessão: ${error.message}`);
+          return;
+        }
+        this.session = data.session;
+        this.log('info', 'Sessão renovada automaticamente.');
+      }
     },
 
     loadAll() {
@@ -216,12 +241,17 @@ function adminApp() {
       this.loadMessages();
     },
 
-    // Sem telefone salvo (o formulario so pede e-mail), entao abre o
-    // WhatsApp sem destinatario fixo — o admin escolhe o contato na hora,
-    // ja com a mensagem de abertura pronta.
+    // Se a mensagem trouxe um numero de WhatsApp, abre a conversa direto
+    // com esse contato. Sem numero, abre sem destinatario fixo — o admin
+    // escolhe o contato na hora, ja com a mensagem de abertura pronta.
     openWhatsApp(m) {
       const text = `Olá ${m.name}! Recebi sua mensagem pelo site sobre "${contactSubjectLabel(m.subject)}":\n\n"${m.message}"\n\nVamos conversar?`;
-      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+      const digits = (m.whatsapp || '').replace(/\D/g, '');
+      const phone = digits ? (digits.length <= 11 ? `55${digits}` : digits) : '';
+      const url = phone
+        ? `https://wa.me/${phone}?text=${encodeURIComponent(text)}`
+        : `https://wa.me/?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank', 'noopener');
     },
 
     async loadSettings() {

@@ -48,12 +48,13 @@ async function fetchSiteSettings() {
 
 // honeypot: campo invisivel que só um bot preencheria. Se vier preenchido,
 // finge sucesso sem gravar nada — nenhuma pista de que foi filtrado.
-async function submitContactMessage({ name, email, subject, message, honeypot }) {
+async function submitContactMessage({ name, email, whatsapp, subject, message, honeypot }) {
   if (honeypot) return;
 
   const { error } = await window.sb.from('messages').insert({
     name: name.trim(),
     email: email.trim().toLowerCase(),
+    whatsapp: whatsapp ? whatsapp.trim() : null,
     subject,
     message: message.trim(),
   });
