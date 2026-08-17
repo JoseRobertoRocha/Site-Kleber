@@ -16,7 +16,6 @@ function emptyForm() {
     detail_paragraphs: [],
     detail_highlight: '',
     detail_action_items: [],
-    featured: false,
     published: true,
     display_order: 0,
   };
@@ -121,7 +120,6 @@ function adminApp() {
         detail_paragraphs: JSON.parse(JSON.stringify(p.detail_paragraphs || [])),
         detail_highlight: p.detail_highlight || '',
         detail_action_items: JSON.parse(JSON.stringify(p.detail_action_items || [])),
-        featured: !!p.featured,
         published: !!p.published,
         display_order: p.display_order || 0,
       };
@@ -225,7 +223,6 @@ function adminApp() {
         detail_paragraphs: this.form.detail_paragraphs.filter(p => p && p.trim()),
         detail_highlight: this.form.detail_highlight.trim() || null,
         detail_action_items: this.form.detail_action_items.filter(a => a && a.trim()),
-        featured: this.form.featured,
         published: this.form.published,
         display_order: Number(this.form.display_order) || 0,
       };
@@ -257,12 +254,6 @@ function adminApp() {
 
     async togglePublished(p) {
       const { error } = await window.sb.from('projects').update({ published: !p.published }).eq('id', p.id);
-      if (error) { alert(error.message); return; }
-      this.loadProjects();
-    },
-
-    async toggleFeatured(p) {
-      const { error } = await window.sb.from('projects').update({ featured: !p.featured }).eq('id', p.id);
       if (error) { alert(error.message); return; }
       this.loadProjects();
     },

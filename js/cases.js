@@ -1,13 +1,15 @@
 // Leitura publica dos projetos (usada por principal.html e projetos.html).
 // Escrita fica em js/admin.js, exclusiva do painel autenticado.
 
+// Home mostra sempre os 3 projetos publicados mais recentes — automatico,
+// sem curadoria manual no painel.
 async function fetchFeaturedCases() {
   const { data, error } = await window.sb
     .from('projects')
     .select('*')
     .eq('published', true)
-    .eq('featured', true)
-    .order('display_order', { ascending: true });
+    .order('created_at', { ascending: false })
+    .limit(3);
 
   if (error) {
     console.error('Erro ao carregar projetos em destaque:', error);

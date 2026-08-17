@@ -81,14 +81,12 @@
               <p class="text-xs text-zinc-400 truncate" x-text="p.category"></p>
               <div class="flex gap-2 mt-1.5">
                 <span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full" :class="p.published ? 'bg-emerald-500/15 text-emerald-400' : 'bg-zinc-700/50 text-zinc-400'" x-text="p.published ? 'Publicado' : 'Rascunho'"></span>
-                <span x-show="p.featured" class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-[#FF6B2B]/15 text-[#FF6B2B]">Destaque</span>
               </div>
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
               <button @click="moveUp(idx)" :disabled="idx===0" class="adm-btn adm-btn-ghost px-2.5" title="Mover para cima">↑</button>
               <button @click="moveDown(idx)" :disabled="idx===projects.length-1" class="adm-btn adm-btn-ghost px-2.5" title="Mover para baixo">↓</button>
               <button @click="togglePublished(p)" class="adm-btn adm-btn-ghost">Publicar/ocultar</button>
-              <button @click="toggleFeatured(p)" class="adm-btn adm-btn-ghost">Destaque</button>
               <button @click="openEdit(p)" class="adm-btn adm-btn-ghost">Editar</button>
               <button @click="remove(p)" class="adm-btn adm-btn-danger">Excluir</button>
             </div>
@@ -139,12 +137,12 @@
         </div>
         <div class="adm-field flex items-center gap-6 sm:col-span-2 pt-1">
           <label class="flex items-center gap-2 !mb-0 normal-case text-sm text-zinc-200"><input type="checkbox" x-model="form.published"> Publicado</label>
-          <label class="flex items-center gap-2 !mb-0 normal-case text-sm text-zinc-200"><input type="checkbox" x-model="form.featured"> Destaque na home</label>
           <div class="flex items-center gap-2">
-            <span class="text-sm text-zinc-400">Ordem</span>
+            <span class="text-sm text-zinc-400">Ordem em "Projetos"</span>
             <input class="adm-input w-20" type="number" x-model.number="form.display_order">
           </div>
         </div>
+        <p class="text-xs text-zinc-500 sm:col-span-2 -mt-2">A página principal mostra sempre os 3 projetos publicados mais recentes, automaticamente — não precisa marcar nada aqui pra isso.</p>
       </div>
 
       <!-- imagem principal -->
