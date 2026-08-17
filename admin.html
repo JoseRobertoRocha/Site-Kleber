@@ -129,7 +129,7 @@
         <div class="w-full h-2 rounded-full bg-white/10 overflow-hidden">
           <div class="h-full rounded-full transition-all duration-500"
                :class="storagePercent >= 100 ? 'bg-rose-500' : storagePercent >= 85 ? 'bg-amber-500' : 'bg-emerald-500'"
-               :style="'width:' + storagePercent + '%'"></div>
+               :style="'width:' + (storageUsedBytes > 0 ? Math.max(storagePercent, 1.5) : 0) + '%'"></div>
         </div>
         <p x-show="storagePercent >= 100" class="text-xs text-rose-400 mt-2">Limite de 10 GB atingido — novos uploads de imagem ficam bloqueados até você apagar imagens antigas.</p>
         <p x-show="storagePercent >= 85 && storagePercent < 100" class="text-xs text-amber-400 mt-2">Perto do limite de 10 GB.</p>
