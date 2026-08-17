@@ -42,6 +42,11 @@ export default async function handler(req, res) {
       return;
     }
 
+    if (req.query && req.query.probe === 'auth') {
+      res.status(200).json({ ok: true, probe: 'auth-only', userId: user.id });
+      return;
+    }
+
     const { fileName, contentType } = req.body || {};
     if (!fileName || !contentType) {
       res.status(400).json({ error: 'fileName e contentType são obrigatórios' });
@@ -60,6 +65,11 @@ export default async function handler(req, res) {
 
     step = 'import @aws-sdk/s3-request-presigner';
     const { getSignedUrl } = await import('@aws-sdk/s3-request-presigner');
+
+    if (req.query && req.query.probe === 'aws-import') {
+      res.status(200).json({ ok: true, probe: 'aws-import-only' });
+      return;
+    }
 
     step = 'build S3 client';
     const s3 = new S3Client({
