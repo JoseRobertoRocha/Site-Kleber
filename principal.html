@@ -11,6 +11,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://kleberslago.com">
 <title>Kleber S. Lago - Marketing &amp; Conteúdo</title>
+<meta name="theme-color" content="#09090b">
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -536,19 +537,22 @@
                 </div>
 
                 <div>
-                  <label for="contact-whatsapp" class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-2">WhatsApp <span class="normal-case text-zinc-600">(opcional)</span></label>
-                  <input id="contact-whatsapp" type="tel" x-model="contactForm.whatsapp" placeholder="(11) 99999-9999" maxlength="20" class="contact-input">
+                  <label for="contact-whatsapp" class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-2">WhatsApp</label>
+                  <input id="contact-whatsapp" type="tel" x-model="contactForm.whatsapp" placeholder="(11) 99999-9999" maxlength="20" required class="contact-input">
                 </div>
 
-                <div>
-                  <label for="contact-subject" class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-2">Assunto</label>
+                <div x-data="{ open: false }" @click.outside="open = false">
+                  <label class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-2">Assunto</label>
                   <div class="relative">
-                    <select id="contact-subject" x-model="contactForm.subject" class="contact-input appearance-none pr-10 cursor-pointer">
+                    <button type="button" @click="open = !open" class="contact-input flex items-center justify-between text-left">
+                      <span x-text="contactSubjects.find(s => s.value === contactForm.subject)?.label"></span>
+                      <svg class="w-4 h-4 text-zinc-500 transition-transform shrink-0" :class="{'rotate-180': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div x-show="open" x-transition x-cloak class="absolute z-20 mt-2 w-full rounded-xl border border-zinc-700 bg-zinc-900 shadow-xl overflow-hidden py-1">
                       <template x-for="s in contactSubjects" :key="s.value">
-                        <option :value="s.value" x-text="s.label"></option>
+                        <button type="button" @click="contactForm.subject = s.value; open = false" class="w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-[#FF6B2B]/10 hover:text-[#FF6B2B]" :class="contactForm.subject === s.value ? 'text-[#FF6B2B] bg-[#FF6B2B]/5' : 'text-zinc-300'" x-text="s.label"></button>
                       </template>
-                    </select>
-                    <svg class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
                   </div>
                 </div>
 
@@ -643,7 +647,7 @@
     class="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border border-zinc-700/60 bg-zinc-900 p-6 md:p-8">
     <div class="absolute -top-20 -right-20 w-56 h-56 bg-[#FF6B2B]/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
 
-    <button type="button" @click="hireModalOpen=false" class="absolute top-4 right-4 w-9 h-9 flex items-center justify-center rounded-full border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors" aria-label="Fechar">
+    <button type="button" @click="hireModalOpen=false" class="absolute top-4 right-4 z-20 w-9 h-9 flex items-center justify-center rounded-full border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors" aria-label="Fechar">
       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
     </button>
 
@@ -663,18 +667,21 @@
           <input id="hire-email" type="email" x-model="contactForm.email" placeholder="seuemail@exemplo.com" required class="contact-input">
         </div>
         <div>
-          <label for="hire-whatsapp" class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-2">WhatsApp <span class="normal-case text-zinc-600">(opcional)</span></label>
-          <input id="hire-whatsapp" type="tel" x-model="contactForm.whatsapp" placeholder="(11) 99999-9999" maxlength="20" class="contact-input">
+          <label for="hire-whatsapp" class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-2">WhatsApp</label>
+          <input id="hire-whatsapp" type="tel" x-model="contactForm.whatsapp" placeholder="(11) 99999-9999" maxlength="20" required class="contact-input">
         </div>
-        <div>
-          <label for="hire-subject" class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-2">Assunto</label>
+        <div x-data="{ open: false }" @click.outside="open = false">
+          <label class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-2">Assunto</label>
           <div class="relative">
-            <select id="hire-subject" x-model="contactForm.subject" class="contact-input appearance-none pr-10 cursor-pointer">
+            <button type="button" @click="open = !open" class="contact-input flex items-center justify-between text-left">
+              <span x-text="contactSubjects.find(s => s.value === contactForm.subject)?.label"></span>
+              <svg class="w-4 h-4 text-zinc-500 transition-transform shrink-0" :class="{'rotate-180': open}" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div x-show="open" x-transition x-cloak class="absolute z-20 mt-2 w-full rounded-xl border border-zinc-700 bg-zinc-900 shadow-xl overflow-hidden py-1">
               <template x-for="s in contactSubjects" :key="s.value">
-                <option :value="s.value" x-text="s.label"></option>
+                <button type="button" @click="contactForm.subject = s.value; open = false" class="w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-[#FF6B2B]/10 hover:text-[#FF6B2B]" :class="contactForm.subject === s.value ? 'text-[#FF6B2B] bg-[#FF6B2B]/5' : 'text-zinc-300'" x-text="s.label"></button>
               </template>
-            </select>
-            <svg class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
           </div>
         </div>
         <div>

@@ -67,3 +67,12 @@ function subscribeToSettingsChanges(onChange) {
     .on('postgres_changes', { event: '*', schema: 'public', table: 'site_settings' }, onChange)
     .subscribe();
 }
+
+// Usado só pelo painel (autenticado) — nova mensagem/edição/exclusão
+// atualiza a lista sem precisar recarregar a página.
+function subscribeToMessageChanges(onChange) {
+  return window.sb
+    .channel('messages-admin-changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, onChange)
+    .subscribe();
+}

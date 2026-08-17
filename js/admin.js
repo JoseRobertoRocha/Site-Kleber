@@ -55,6 +55,7 @@ function adminApp() {
 
     messages: [],
     loadingMessages: false,
+    messagesSubscribed: false,
 
     settingsForm: { whatsapp_url: '', instagram_url: '', linkedin_url: '', contact_email: '' },
     settingsError: '',
@@ -146,6 +147,10 @@ function adminApp() {
       this.loadMessages();
       this.loadSettings();
       this.loadStorageUsage();
+      if (!this.messagesSubscribed) {
+        this.messagesSubscribed = true;
+        subscribeToMessageChanges(() => this.loadMessages());
+      }
     },
 
     async loadStorageUsage() {

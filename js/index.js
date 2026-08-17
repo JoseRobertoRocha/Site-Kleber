@@ -76,8 +76,8 @@ function app() {
         this.contactError = 'Informe um e-mail válido.';
         return;
       }
-      if (whatsapp && whatsapp.replace(/\D/g, '').length < 10) {
-        this.contactError = 'Informe um número de WhatsApp válido (com DDD) ou deixe em branco.';
+      if (whatsapp.replace(/\D/g, '').length < 10) {
+        this.contactError = 'Informe um número de WhatsApp válido, com DDD.';
         return;
       }
       if (message.length < 10) {
