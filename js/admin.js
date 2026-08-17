@@ -70,6 +70,7 @@ function adminApp() {
     storageUsedBytes: 0,
     storageLimitBytes: 10 * 1024 * 1024 * 1024,
     loadingStorage: false,
+    storageError: '',
 
     get unreadCount() {
       return this.messages.filter(m => !m.is_read).length;
@@ -113,14 +114,19 @@ function adminApp() {
 
     async loadStorageUsage() {
       this.loadingStorage = true;
+      this.storageError = '';
       try {
         const token = await this.getAccessToken();
+        if (!token) throw new Error('Sessão sem token de acesso — tente sair e entrar de novo.');
         const res = await fetch('/api/r2-usage', { headers: { Authorization: `Bearer ${token}` } });
-        const body = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(body.error || 'Falha ao carregar armazenamento');
+        const rawText = await res.text();
+        let body = {};
+        try { body = JSON.parse(rawText); } catch { /* corpo nao era JSON */ }
+        if (!res.ok) throw new Error(body.error || rawText || `HTTP ${res.status}`);
         this.storageUsedBytes = body.usedBytes;
         this.storageLimitBytes = body.limitBytes;
       } catch (err) {
+        this.storageError = err.message;
         this.log('error', `Armazenamento: ${err.message}`);
       } finally {
         this.loadingStorage = false;
