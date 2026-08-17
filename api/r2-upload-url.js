@@ -28,6 +28,16 @@ export default async function handler(req, res) {
       return;
     }
 
+    if (req.query && req.query.probe === 'raw-fetch') {
+      step = 'raw fetch to supabase auth';
+      const r = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
+        headers: { Authorization: `Bearer ${token}`, apikey: process.env.SUPABASE_ANON_KEY },
+      });
+      const body = await r.text();
+      res.status(200).json({ ok: true, probe: 'raw-fetch', status: r.status, body });
+      return;
+    }
+
     step = 'import node:crypto';
     const { randomUUID } = await import('node:crypto');
 
