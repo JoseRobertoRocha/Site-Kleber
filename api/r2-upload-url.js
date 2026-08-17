@@ -1,12 +1,12 @@
+const { randomUUID } = require('node:crypto');
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+const { createClient } = require('@supabase/supabase-js');
+
 // Emite uma URL PUT pre-assinada para o bucket R2. So responde se o pedido
 // trouxer um access token valido de uma sessao Supabase autenticada — sem
 // isso, qualquer visitante do site conseguiria subir arquivos no bucket.
-//
-// Os imports pesados (aws-sdk, supabase-js) sao carregados dinamicamente
-// DENTRO do try/catch de proposito: se alguma dependencia falhar ao
-// carregar no runtime do Vercel, isso vira um JSON de erro legivel em vez
-// de um crash opaco (FUNCTION_INVOCATION_FAILED) sem nenhuma pista.
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   let step = 'start';
   try {
     if (req.method !== 'POST') {
@@ -28,39 +28,11 @@ export default async function handler(req, res) {
       return;
     }
 
-    if (req.query && req.query.probe === 'any-fetch') {
-      step = 'fetch unrelated external host';
-      const r = await fetch('https://api.github.com');
-      res.status(200).json({ ok: true, probe: 'any-fetch', status: r.status });
-      return;
-    }
-
-    if (req.query && req.query.probe === 'raw-fetch') {
-      step = 'raw fetch to supabase auth';
-      const r = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
-        headers: { Authorization: `Bearer ${token}`, apikey: process.env.SUPABASE_ANON_KEY },
-      });
-      const body = await r.text();
-      res.status(200).json({ ok: true, probe: 'raw-fetch', status: r.status, body });
-      return;
-    }
-
-    step = 'import node:crypto';
-    const { randomUUID } = await import('node:crypto');
-
-    step = 'import @supabase/supabase-js';
-    const { createClient } = await import('@supabase/supabase-js');
-
     step = 'supabase auth.getUser';
     const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) {
       res.status(401).json({ error: 'Sessão inválida' });
-      return;
-    }
-
-    if (req.query && req.query.probe === 'auth') {
-      res.status(200).json({ ok: true, probe: 'auth-only', userId: user.id });
       return;
     }
 
@@ -76,17 +48,6 @@ export default async function handler(req, res) {
 
     const safeExt = (fileName.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
     const key = `projects/${randomUUID()}.${safeExt}`;
-
-    step = 'import @aws-sdk/client-s3';
-    const { S3Client, PutObjectCommand } = await import('@aws-sdk/client-s3');
-
-    step = 'import @aws-sdk/s3-request-presigner';
-    const { getSignedUrl } = await import('@aws-sdk/s3-request-presigner');
-
-    if (req.query && req.query.probe === 'aws-import') {
-      res.status(200).json({ ok: true, probe: 'aws-import-only' });
-      return;
-    }
 
     step = 'build S3 client';
     const s3 = new S3Client({
@@ -112,4 +73,4 @@ export default async function handler(req, res) {
     console.error(`Erro ao gerar URL do R2 (etapa: ${step}):`, err);
     res.status(500).json({ error: `[${step}] ${err && err.message ? err.message : String(err)}` });
   }
-}
+};
