@@ -154,7 +154,7 @@
         <div class="space-y-3">
           <template x-for="(p, idx) in projects" :key="p.id">
             <div class="adm-card p-4 flex flex-col sm:flex-row sm:items-center gap-4">
-              <div class="flex items-center gap-4 min-w-0">
+              <div class="flex items-center gap-4 min-w-0 flex-1">
                 <img :src="p.main_image_url" class="w-16 h-16 rounded-lg object-cover shrink-0 bg-zinc-800" :alt="p.title">
                 <div class="min-w-0 flex-1">
                   <p class="font-medium truncate" x-text="p.title"></p>
