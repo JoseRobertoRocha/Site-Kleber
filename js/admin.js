@@ -244,8 +244,8 @@ function adminApp() {
     openNew() {
       this.editingId = null;
       this.form = emptyForm();
-      const maxOrder = this.projects.reduce((max, p) => Math.max(max, p.display_order || 0), 0);
-      this.form.display_order = maxOrder + 1;
+      const minOrder = this.projects.reduce((min, p) => Math.min(min, p.display_order || 0), 0);
+      this.form.display_order = minOrder - 1;
       this.saveError = '';
       this.formOpen = true;
     },
