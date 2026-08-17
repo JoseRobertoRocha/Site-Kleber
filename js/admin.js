@@ -66,6 +66,7 @@ function adminApp() {
     savingPassword: false,
 
     logs: [],
+    sessionExpired: false,
 
     storageUsedBytes: 0,
     storageLimitBytes: 10 * 1024 * 1024 * 1024,
@@ -91,6 +92,16 @@ function adminApp() {
     log(level, message) {
       this.logs.unshift({ level, message, time: new Date().toLocaleTimeString('pt-BR') });
       if (this.logs.length > 200) this.logs.length = 200;
+    },
+
+    // Marca a sessao como expirada quando um erro bate com os padroes que o
+    // Supabase/nossas functions usam pra token invalido/vencido — mostra o
+    // aviso fixo no topo em vez de deixar cada tela falhar silenciosamente.
+    checkAuthError(message) {
+      const m = (message || '').toLowerCase();
+      if (m.includes('sessão inválida') || m.includes('jwt expired') || m.includes('invalid claim') || m.includes('token de autenticação ausente') || m.includes('session_not_found')) {
+        this.sessionExpired = true;
+      }
     },
 
     async init() {
@@ -128,6 +139,7 @@ function adminApp() {
       } catch (err) {
         this.storageError = err.message;
         this.log('error', `Armazenamento: ${err.message}`);
+        this.checkAuthError(err.message);
       } finally {
         this.loadingStorage = false;
       }
@@ -142,6 +154,7 @@ function adminApp() {
       });
       this.loggingIn = false;
       if (error) this.loginError = 'E-mail ou senha inválidos.';
+      else this.sessionExpired = false;
     },
 
     async logout() {
@@ -150,6 +163,7 @@ function adminApp() {
       this.messages = [];
       this.formOpen = false;
       this.tab = 'dashboard';
+      this.sessionExpired = false;
     },
 
     async loadProjects() {
@@ -161,6 +175,7 @@ function adminApp() {
       this.loadingProjects = false;
       if (error) {
         this.log('error', `Falha ao carregar projetos: ${error.message}`);
+        this.checkAuthError(error.message);
         return;
       }
       this.projects = data || [];
@@ -175,6 +190,7 @@ function adminApp() {
       this.loadingMessages = false;
       if (error) {
         this.log('error', `Falha ao carregar mensagens: ${error.message}`);
+        this.checkAuthError(error.message);
         return;
       }
       this.messages = data || [];
@@ -309,6 +325,7 @@ function adminApp() {
         let message = rawText;
         try { message = JSON.parse(rawText).error || rawText; } catch { /* corpo nao era JSON */ }
         this.log('error', `/api/r2-upload-url respondeu ${res.status}: ${message || '(sem corpo)'}`);
+        this.checkAuthError(message);
         throw new Error(message || 'Falha ao preparar upload');
       }
       const { uploadUrl, publicUrl } = await res.json();
@@ -404,6 +421,7 @@ function adminApp() {
       if (error) {
         this.saveError = error.message;
         this.log('error', `Falha ao salvar projeto "${payload.title}": ${error.message}`);
+        this.checkAuthError(error.message);
         return;
       }
       this.log('info', `Projeto "${payload.title}" salvo.`);

@@ -53,6 +53,14 @@
     </form>
   </div>
 
+  <!-- ═══ AVISO DE SESSÃO EXPIRADA ═══ -->
+  <div x-show="session && sessionExpired" x-cloak class="sticky top-0 z-50 bg-rose-600 text-white">
+    <div class="max-w-5xl mx-auto px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <p class="text-sm font-medium">Sessão expirada. Por favor, saia e entre novamente.</p>
+      <button type="button" @click="logout()" class="adm-btn bg-white text-rose-600 hover:bg-rose-50 shrink-0">Sair agora</button>
+    </div>
+  </div>
+
   <!-- ═══ PAINEL ═══ -->
   <div x-show="session" class="max-w-5xl mx-auto px-6 py-10">
     <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
