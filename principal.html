@@ -475,68 +475,98 @@
       <div class="absolute top-0 right-0 w-64 h-64 bg-[#FF6B2B]/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
       <div class="absolute bottom-0 left-0 w-40 h-40 bg-[#FF6B2B]/10 rounded-full blur-2xl pointer-events-none" aria-hidden="true"></div>
 
-      <div class="relative z-10 grid md:grid-cols-2 gap-12 items-start">
+      <div class="relative z-10 grid md:grid-cols-2 gap-12 md:gap-16 items-start">
 
         <div>
           <p class="reveal text-xs font-medium text-[#FF6B2B] tracking-[0.3em] uppercase mb-3">07 — Vamos conversar</p>
-          <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-white leading-tight mb-5">Vamos trabalhar<br>juntos</h2>
-          <p class="reveal d2 text-zinc-400 leading-relaxed mb-8">Estou aberto a projetos de UI/UX e frontend, de curto ou longo prazo. Landing page, redesign completo de produto ou uma revisão estratégica: vamos conversar.</p>
+          <h2 class="reveal d1 font-display font-bold text-4xl md:text-5xl text-white leading-tight mb-5">Vamos criar algo<br>incrível juntos.</h2>
+          <p class="reveal d2 text-zinc-400 leading-relaxed mb-10 max-w-md">Tem um projeto, uma ideia ou precisa de uma solução digital? Conte um pouco sobre o que você precisa e vamos conversar.</p>
 
-          <div class="reveal d3 flex flex-col gap-4">
-            <a :href="'mailto:' + settings.contact_email" class="group flex items-center gap-3 text-zinc-400 hover:text-white transition-colors">
-              <span class="w-9 h-9 flex items-center justify-center bg-zinc-800 rounded-lg group-hover:bg-[#FF6B2B]/20 transition-colors shrink-0">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          <div class="reveal d3 flex flex-col -mx-4">
+            <a :href="'mailto:' + settings.contact_email" class="group flex items-center gap-4 rounded-xl px-4 py-3 hover:bg-white/5 transition-colors">
+              <span class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 group-hover:border-[#FF6B2B]/40 group-hover:bg-[#FF6B2B]/10 transition-colors shrink-0">
+                <svg class="w-4 h-4 text-zinc-400 group-hover:text-[#FF6B2B] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
               </span>
-              <span class="text-sm" x-text="settings.contact_email"></span>
+              <span class="min-w-0">
+                <span class="block text-[11px] text-zinc-500 uppercase tracking-wider">E-mail</span>
+                <span class="block text-sm text-zinc-200 group-hover:text-white transition-colors truncate" x-text="settings.contact_email"></span>
+              </span>
             </a>
-            <a :href="settings.linkedin_url" rel="noopener noreferrer" target="_blank" class="group flex items-center gap-3 text-zinc-400 hover:text-white transition-colors">
-              <span class="w-9 h-9 flex items-center justify-center bg-zinc-800 rounded-lg group-hover:bg-[#FF6B2B]/20 transition-colors shrink-0">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+            <a :href="settings.linkedin_url" rel="noopener noreferrer" target="_blank" class="group flex items-center gap-4 rounded-xl px-4 py-3 hover:bg-white/5 transition-colors">
+              <span class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 group-hover:border-[#FF6B2B]/40 group-hover:bg-[#FF6B2B]/10 transition-colors shrink-0">
+                <svg class="w-4 h-4 text-zinc-400 group-hover:text-[#FF6B2B] transition-colors" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
               </span>
-              <span class="text-sm">linkedin.com/in/kleber-s-lago</span>
+              <span class="min-w-0">
+                <span class="block text-[11px] text-zinc-500 uppercase tracking-wider">LinkedIn</span>
+                <span class="block text-sm text-zinc-200 group-hover:text-white transition-colors truncate">linkedin.com/in/kleber-s-lago</span>
+              </span>
             </a>
-            <a :href="settings.instagram_url" rel="noopener noreferrer" target="_blank" class="group flex items-center gap-3 text-zinc-400 hover:text-white transition-colors">
-              <span class="w-9 h-9 flex items-center justify-center bg-zinc-800 rounded-lg group-hover:bg-[#FF6B2B]/20 transition-colors shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><path stroke-linecap="round" d="M17.5 6.5h.01" stroke-width="2"/></svg>
+            <a :href="settings.instagram_url" rel="noopener noreferrer" target="_blank" class="group flex items-center gap-4 rounded-xl px-4 py-3 hover:bg-white/5 transition-colors">
+              <span class="w-10 h-10 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 group-hover:border-[#FF6B2B]/40 group-hover:bg-[#FF6B2B]/10 transition-colors shrink-0">
+                <svg class="w-4 h-4 text-zinc-400 group-hover:text-[#FF6B2B] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><path stroke-linecap="round" d="M17.5 6.5h.01" stroke-width="2"/></svg>
               </span>
-              <span class="text-sm">instagram.com/omktdokleber</span>
+              <span class="min-w-0">
+                <span class="block text-[11px] text-zinc-500 uppercase tracking-wider">Instagram</span>
+                <span class="block text-sm text-zinc-200 group-hover:text-white transition-colors truncate">instagram.com/omktdokleber</span>
+              </span>
             </a>
           </div>
         </div>
 
         <div class="reveal d2">
-          <div class="rounded-2xl border border-zinc-700/70 bg-zinc-800/40 p-6 md:p-8">
-            <p class="text-xs font-medium text-[#FF6B2B] tracking-widest uppercase mb-4">Contato direto</p>
-            <div class="flex flex-col gap-3">
-              <a :href="'mailto:' + settings.contact_email" class="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 rounded-xl border border-zinc-700 bg-zinc-900/40 px-5 py-4 text-zinc-300 hover:border-[#FF6B2B] hover:text-white transition-colors">
-                <span class="font-medium">Email</span>
-                <span class="text-sm text-zinc-400 group-hover:text-[#FF6B2B] break-all sm:break-normal sm:truncate" x-text="settings.contact_email"></span>
-              </a>
-              <a :href="settings.linkedin_url" rel="noopener noreferrer" target="_blank" class="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 rounded-xl border border-zinc-700 bg-zinc-900/40 px-5 py-4 text-zinc-300 hover:border-[#FF6B2B] hover:text-white transition-colors">
-                <span class="font-medium">LinkedIn</span>
-                <span class="text-sm text-zinc-400 group-hover:text-[#FF6B2B] break-all sm:break-normal sm:truncate">linkedin.com/in/kleber-s-lago</span>
-              </a>
-              <a :href="settings.whatsapp_url" rel="noopener noreferrer" target="_blank" class="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-4 rounded-xl border border-zinc-700 bg-zinc-900/40 px-5 py-4 text-zinc-300 hover:border-[#FF6B2B] hover:text-white transition-colors">
-                <span class="font-medium">WhatsApp</span>
-                <span class="text-sm text-zinc-400 group-hover:text-[#FF6B2B]">Enviar mensagem</span>
-              </a>
-            </div>
-          </div>
+          <div class="relative rounded-2xl border border-zinc-700/60 bg-zinc-950/50 p-6 md:p-8 overflow-hidden">
+            <div class="absolute -top-20 -right-20 w-56 h-56 bg-[#FF6B2B]/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
 
-          <div class="rounded-2xl border border-zinc-700/70 bg-zinc-800/40 p-6 md:p-8 mt-6">
-            <p class="text-xs font-medium text-[#FF6B2B] tracking-widest uppercase mb-4">Ou envie uma mensagem</p>
-            <form @submit.prevent="sendContactMessage()" x-show="!contactSent" class="space-y-3">
-              <input type="text" x-model="contactForm.name" placeholder="Seu nome" required class="w-full rounded-xl border border-zinc-700 bg-zinc-900/40 px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-[#FF6B2B]">
-              <input type="email" x-model="contactForm.email" placeholder="Seu e-mail" required class="w-full rounded-xl border border-zinc-700 bg-zinc-900/40 px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-[#FF6B2B]">
-              <textarea x-model="contactForm.message" placeholder="Sua mensagem" rows="4" required class="w-full rounded-xl border border-zinc-700 bg-zinc-900/40 px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-[#FF6B2B]"></textarea>
-              <p x-show="contactError" x-text="contactError" class="text-sm text-rose-400"></p>
-              <button type="submit" class="shimmer w-full inline-flex items-center justify-center gap-2 bg-[#FF6B2B] text-white font-medium px-6 py-3 rounded-full hover:bg-[#FF8F5C] transition-colors text-sm" :disabled="contactSending">
-                <span x-text="contactSending ? 'Enviando…' : 'Enviar mensagem'"></span>
-              </button>
-            </form>
-            <div x-show="contactSent" x-cloak class="text-center py-6">
-              <p class="text-white font-medium mb-1">Mensagem enviada!</p>
-              <p class="text-sm text-zinc-400">Vou te responder em breve.</p>
+            <div class="relative z-10">
+              <p class="text-xs font-medium text-[#FF6B2B] tracking-[0.25em] uppercase mb-2">Inicie uma conversa</p>
+              <p class="text-sm text-zinc-400 mb-7">Envie sua mensagem. Ela será recebida diretamente pela nossa equipe.</p>
+
+              <form @submit.prevent="sendContactMessage()" x-show="!contactSent" class="space-y-4">
+                <!-- honeypot: invisivel para pessoas, bots costumam preencher -->
+                <input id="contact-hp" type="text" x-model="contactForm.website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true">
+
+                <div>
+                  <label for="contact-name" class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-2">Seu nome</label>
+                  <input id="contact-name" type="text" x-model="contactForm.name" placeholder="Como podemos chamar você?" maxlength="100" required class="contact-input">
+                </div>
+
+                <div>
+                  <label for="contact-email" class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-2">Seu e-mail</label>
+                  <input id="contact-email" type="email" x-model="contactForm.email" placeholder="seuemail@exemplo.com" required class="contact-input">
+                </div>
+
+                <div>
+                  <label for="contact-subject" class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-2">Assunto</label>
+                  <div class="relative">
+                    <select id="contact-subject" x-model="contactForm.subject" class="contact-input appearance-none pr-10 cursor-pointer">
+                      <template x-for="s in contactSubjects" :key="s.value">
+                        <option :value="s.value" x-text="s.label"></option>
+                      </template>
+                    </select>
+                    <svg class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                  </div>
+                </div>
+
+                <div>
+                  <label for="contact-message" class="block text-[11px] font-medium text-zinc-500 uppercase tracking-wider mb-2">Mensagem</label>
+                  <textarea id="contact-message" x-model="contactForm.message" placeholder="Conte um pouco sobre o que você precisa..." rows="5" maxlength="2000" required class="contact-input resize-none"></textarea>
+                </div>
+
+                <p x-show="contactError" x-text="contactError" class="text-sm text-rose-400"></p>
+
+                <button type="submit" class="contact-submit" :disabled="contactSending">
+                  <span x-text="contactSending ? 'Enviando mensagem...' : 'Enviar mensagem'"></span>
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </button>
+              </form>
+
+              <div x-show="contactSent" x-cloak class="text-center py-10">
+                <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-emerald-500/15 flex items-center justify-center">
+                  <svg class="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <p class="text-white font-medium mb-1">Mensagem enviada com sucesso!</p>
+                <p class="text-sm text-zinc-400">Entraremos em contato em breve.</p>
+              </div>
             </div>
           </div>
         </div>

@@ -672,3 +672,48 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .dark .cert-download{color:#d4d4d8}
 .cert-download:hover{color:#FF6B2B}
 .cert-download svg{width:.9rem;height:.9rem;flex-shrink:0}
+
+/* ── formulário "Inicie uma conversa" (seção de contato) ── */
+.contact-input{
+  width:100%;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:.85rem;
+  padding:.85rem 1rem;
+  color:#fff;
+  font-size:.9rem;
+  transition:border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+}
+.contact-input::placeholder{color:#71717a}
+.contact-input:focus{
+  outline:none;
+  border-color:#FF6B2B;
+  background:rgba(255,255,255,.06);
+  box-shadow:0 0 0 3px rgba(255,107,43,.12), 0 0 24px rgba(255,107,43,.14);
+}
+select.contact-input option{background:#18181b;color:#fff}
+.contact-submit{
+  width:100%;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.55rem;
+  background:#FF6B2B;
+  color:#fff;
+  font-weight:500;
+  font-size:.9rem;
+  padding:.95rem 1.5rem;
+  border-radius:999px;
+  border:0;
+  cursor:pointer;
+  transition:background-color .25s ease, transform .25s ease, box-shadow .25s ease;
+  box-shadow:0 8px 24px rgba(255,107,43,.16);
+}
+.contact-submit svg{transition:transform .25s ease}
+.contact-submit:hover:not(:disabled){
+  background:#FF8F5C;
+  transform:translateY(-2px);
+  box-shadow:0 14px 32px rgba(255,107,43,.3);
+}
+.contact-submit:hover:not(:disabled) svg{transform:translateX(4px)}
+.contact-submit:disabled{opacity:.7;cursor:progress}

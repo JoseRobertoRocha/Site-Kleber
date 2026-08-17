@@ -7,10 +7,11 @@ function app() {
     caseOpen: null,
     cases: [],
     settings: { whatsapp_url: '', instagram_url: '', linkedin_url: '', contact_email: '' },
-    contactForm: { name: '', email: '', message: '' },
+    contactForm: { name: '', email: '', subject: 'novo_projeto', message: '', website: '' },
     contactSending: false,
     contactSent: false,
     contactError: '',
+    contactSubjects: (typeof CONTACT_SUBJECTS !== 'undefined') ? CONTACT_SUBJECTS : [],
     gx: 50,
     gy: 50,
     formationText: '',
@@ -58,17 +59,39 @@ function app() {
 
     async sendContactMessage() {
       this.contactError = '';
-      if (!this.contactForm.name.trim() || !this.contactForm.email.trim() || !this.contactForm.message.trim()) {
-        this.contactError = 'Preencha nome, e-mail e mensagem.';
+      if (this.contactSending || this.contactSent) return;
+
+      const name = this.contactForm.name.trim();
+      const email = this.contactForm.email.trim();
+      const message = this.contactForm.message.trim();
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (name.length < 2 || name.length > 100) {
+        this.contactError = 'Informe seu nome (2 a 100 caracteres).';
         return;
       }
+      if (!emailPattern.test(email)) {
+        this.contactError = 'Informe um e-mail válido.';
+        return;
+      }
+      if (message.length < 10) {
+        this.contactError = 'Conte um pouco mais sobre o que você precisa (mínimo 10 caracteres).';
+        return;
+      }
+      if (message.length > 2000) {
+        this.contactError = 'Mensagem muito longa (máximo de 2000 caracteres).';
+        return;
+      }
+
       this.contactSending = true;
       try {
-        await submitContactMessage(this.contactForm);
+        await submitContactMessage({ ...this.contactForm, name, email, message });
         this.contactSent = true;
-        this.contactForm = { name: '', email: '', message: '' };
+        this.contactForm = { name: '', email: '', subject: 'novo_projeto', message: '', website: '' };
       } catch (err) {
-        this.contactError = 'Não foi possível enviar. Tente novamente ou chame no WhatsApp.';
+        this.contactError = (err.message && err.message.includes('Aguarde'))
+          ? err.message
+          : 'Não foi possível enviar. Tente novamente ou chame no WhatsApp.';
       } finally {
         this.contactSending = false;
       }

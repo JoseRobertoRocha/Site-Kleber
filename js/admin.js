@@ -210,6 +210,20 @@ function adminApp() {
       this.loadMessages();
     },
 
+    async updateMessageStatus(m, status) {
+      const { error } = await window.sb.from('messages').update({ status }).eq('id', m.id);
+      if (error) { this.log('error', error.message); return; }
+      this.loadMessages();
+    },
+
+    // Sem telefone salvo (o formulario so pede e-mail), entao abre o
+    // WhatsApp sem destinatario fixo — o admin escolhe o contato na hora,
+    // ja com a mensagem de abertura pronta.
+    openWhatsApp(m) {
+      const text = `Olá ${m.name}! Recebi sua mensagem pelo site sobre "${contactSubjectLabel(m.subject)}":\n\n"${m.message}"\n\nVamos conversar?`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+    },
+
     async loadSettings() {
       const { data, error } = await window.sb.from('site_settings').select('*').eq('id', 1).maybeSingle();
       if (error) {

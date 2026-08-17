@@ -8,6 +8,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
+<script src="js/settings.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&display=swap" rel="stylesheet">
@@ -28,6 +29,7 @@
   .adm-tab{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1rem;border-radius:.7rem;font-size:.85rem;font-weight:500;color:#a1a1aa;white-space:nowrap}
   .adm-tab:hover{color:#fff;background:rgba(255,255,255,.05)}
   .adm-tab.active{color:#fff;background:rgba(255,107,43,.15);border:1px solid rgba(255,107,43,.35)}
+  .adm-select-sm{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:.6rem;padding:.4rem .6rem;color:#fff;font-size:.75rem}
   [x-cloak]{display:none!important}
 </style>
 </head>
@@ -379,19 +381,30 @@
       <div class="space-y-3">
         <template x-for="m in messages" :key="m.id">
           <div class="adm-card p-5" :class="{'border-[#FF6B2B]/40': !m.is_read}">
-            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-2">
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
               <div class="min-w-0">
-                <p class="font-medium" x-text="m.name"></p>
+                <div class="flex items-center gap-2 flex-wrap mb-1">
+                  <p class="font-medium" x-text="m.name"></p>
+                  <span x-show="!m.is_read" class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-[#FF6B2B]/15 text-[#FF6B2B]">Não lida</span>
+                </div>
                 <a class="text-xs text-zinc-400 hover:text-[#FF6B2B] break-all" :href="'mailto:' + m.email" x-text="m.email"></a>
+                <p class="text-xs text-zinc-500 mt-1" x-text="contactSubjectLabel(m.subject)"></p>
               </div>
-              <div class="flex items-center gap-2 flex-wrap sm:shrink-0">
-                <span x-show="!m.is_read" class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-[#FF6B2B]/15 text-[#FF6B2B]">Nova</span>
+              <select class="adm-select-sm shrink-0" :value="m.status" @change="updateMessageStatus(m, $event.target.value)">
+                <template x-for="s in MESSAGE_STATUSES" :key="s.value">
+                  <option :value="s.value" x-text="s.label"></option>
+                </template>
+              </select>
+            </div>
+            <p class="text-sm text-zinc-300 whitespace-pre-wrap" x-text="m.message"></p>
+            <div class="flex items-center justify-between flex-wrap gap-3 mt-4">
+              <p class="text-xs text-zinc-500" x-text="new Date(m.created_at).toLocaleString('pt-BR')"></p>
+              <div class="flex items-center gap-2 flex-wrap">
+                <button type="button" @click="openWhatsApp(m)" class="adm-btn adm-btn-ghost">Falar no WhatsApp</button>
                 <button type="button" @click="toggleMessageRead(m)" class="adm-btn adm-btn-ghost" x-text="m.is_read ? 'Marcar não lida' : 'Marcar lida'"></button>
                 <button type="button" @click="removeMessage(m)" class="adm-btn adm-btn-danger">Excluir</button>
               </div>
             </div>
-            <p class="text-sm text-zinc-300 whitespace-pre-wrap" x-text="m.message"></p>
-            <p class="text-xs text-zinc-500 mt-2" x-text="new Date(m.created_at).toLocaleString('pt-BR')"></p>
           </div>
         </template>
       </div>

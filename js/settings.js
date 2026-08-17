@@ -7,6 +7,31 @@ const DEFAULT_SETTINGS = {
   contact_email: 'klebersimaslago@gmail.com',
 };
 
+// Compartilhado entre o formulario publico (principal.html) e o painel
+// admin (aba Mensagens), pra rotular subject/status de forma consistente.
+const CONTACT_SUBJECTS = [
+  { value: 'novo_projeto', label: 'Quero desenvolver um projeto' },
+  { value: 'orcamento', label: 'Solicitar orçamento' },
+  { value: 'parceria', label: 'Parceria' },
+  { value: 'suporte', label: 'Suporte' },
+  { value: 'outro_assunto', label: 'Outro assunto' },
+];
+
+const MESSAGE_STATUSES = [
+  { value: 'nova', label: 'Nova' },
+  { value: 'em_atendimento', label: 'Em atendimento' },
+  { value: 'respondida', label: 'Respondida' },
+  { value: 'arquivada', label: 'Arquivada' },
+];
+
+function contactSubjectLabel(value) {
+  return CONTACT_SUBJECTS.find(s => s.value === value)?.label || value;
+}
+
+function messageStatusLabel(value) {
+  return MESSAGE_STATUSES.find(s => s.value === value)?.label || value;
+}
+
 async function fetchSiteSettings() {
   const { data, error } = await window.sb
     .from('site_settings')
@@ -21,8 +46,17 @@ async function fetchSiteSettings() {
   return { ...DEFAULT_SETTINGS, ...data };
 }
 
-async function submitContactMessage({ name, email, message }) {
-  const { error } = await window.sb.from('messages').insert({ name, email, message });
+// honeypot: campo invisivel que só um bot preencheria. Se vier preenchido,
+// finge sucesso sem gravar nada — nenhuma pista de que foi filtrado.
+async function submitContactMessage({ name, email, subject, message, honeypot }) {
+  if (honeypot) return;
+
+  const { error } = await window.sb.from('messages').insert({
+    name: name.trim(),
+    email: email.trim().toLowerCase(),
+    subject,
+    message: message.trim(),
+  });
   if (error) throw new Error(error.message);
 }
 
