@@ -25,6 +25,9 @@
   .adm-btn-ghost:hover{background:rgba(255,255,255,.12)}
   .adm-btn-danger{background:rgba(244,63,94,.12);color:#fda4af;border:1px solid rgba(244,63,94,.3)}
   .adm-btn-danger:hover{background:rgba(244,63,94,.22)}
+  .adm-tab{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1rem;border-radius:.7rem;font-size:.85rem;font-weight:500;color:#a1a1aa;white-space:nowrap}
+  .adm-tab:hover{color:#fff;background:rgba(255,255,255,.05)}
+  .adm-tab.active{color:#fff;background:rgba(255,107,43,.15);border:1px solid rgba(255,107,43,.35)}
   [x-cloak]{display:none!important}
 </style>
 </head>
@@ -50,12 +53,12 @@
     </form>
   </div>
 
-  <!-- ═══ DASHBOARD ═══ -->
+  <!-- ═══ PAINEL ═══ -->
   <div x-show="session" class="max-w-5xl mx-auto px-6 py-10">
-    <header class="flex items-center justify-between mb-10">
+    <header class="flex items-center justify-between mb-6">
       <div>
         <p class="text-xs font-medium text-[#FF6B2B] tracking-[0.3em] uppercase mb-2">Painel</p>
-        <h1 class="font-display font-bold text-3xl">Projetos</h1>
+        <h1 class="font-display font-bold text-3xl">Kleber S. Lago</h1>
       </div>
       <div class="flex items-center gap-3">
         <a href="principal.html" target="_blank" class="adm-btn adm-btn-ghost">Ver site ↗</a>
@@ -63,221 +66,363 @@
       </div>
     </header>
 
-    <!-- lista -->
-    <div x-show="!formOpen">
-      <div class="flex items-center justify-between mb-5">
-        <p class="text-sm text-zinc-400" x-text="projects.length + ' projeto(s)'"></p>
-        <button @click="openNew()" class="adm-btn adm-btn-primary">+ Novo projeto</button>
+    <nav class="flex items-center gap-1 mb-10 overflow-x-auto pb-1 border-b border-white/10">
+      <button type="button" @click="tab='dashboard'" class="adm-tab" :class="{active: tab==='dashboard'}">Dashboard</button>
+      <button type="button" @click="tab='projects'; closeForm()" class="adm-tab" :class="{active: tab==='projects'}">Projetos</button>
+      <button type="button" @click="tab='messages'" class="adm-tab" :class="{active: tab==='messages'}">
+        Mensagens
+        <span x-show="unreadCount" x-text="unreadCount" class="bg-[#FF6B2B] text-white text-[10px] font-bold rounded-full min-w-[1.1rem] h-[1.1rem] px-1 flex items-center justify-center"></span>
+      </button>
+      <button type="button" @click="tab='settings'" class="adm-tab" :class="{active: tab==='settings'}">Configurações</button>
+      <button type="button" @click="tab='logs'" class="adm-tab" :class="{active: tab==='logs'}">Logs</button>
+    </nav>
+
+    <!-- ─────────────── DASHBOARD ─────────────── -->
+    <div x-show="tab==='dashboard'" x-cloak>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="adm-card p-5">
+          <p class="text-xs text-zinc-400 uppercase tracking-wide mb-2">Projetos publicados</p>
+          <p class="font-display font-bold text-3xl" x-text="projects.filter(p => p.published).length"></p>
+        </div>
+        <div class="adm-card p-5">
+          <p class="text-xs text-zinc-400 uppercase tracking-wide mb-2">Rascunhos</p>
+          <p class="font-display font-bold text-3xl" x-text="projects.filter(p => !p.published).length"></p>
+        </div>
+        <div class="adm-card p-5">
+          <p class="text-xs text-zinc-400 uppercase tracking-wide mb-2">Total de projetos</p>
+          <p class="font-display font-bold text-3xl" x-text="projects.length"></p>
+        </div>
+        <div class="adm-card p-5">
+          <p class="text-xs text-zinc-400 uppercase tracking-wide mb-2">Mensagens não lidas</p>
+          <p class="font-display font-bold text-3xl" x-text="unreadCount"></p>
+        </div>
       </div>
 
-      <p x-show="loadingProjects" class="text-sm text-zinc-400">Carregando…</p>
+      <div class="adm-card p-6">
+        <p class="font-display font-bold mb-4">Últimas mensagens</p>
+        <p x-show="!messages.length" class="text-sm text-zinc-500">Nenhuma mensagem recebida ainda.</p>
+        <div class="space-y-2">
+          <template x-for="m in messages.slice(0,3)" :key="m.id">
+            <button type="button" @click="tab='messages'" class="w-full text-left flex items-center justify-between gap-4 rounded-lg border border-white/10 px-4 py-3 hover:bg-white/5">
+              <div class="min-w-0">
+                <p class="text-sm font-medium truncate" x-text="m.name"></p>
+                <p class="text-xs text-zinc-500 truncate" x-text="m.message"></p>
+              </div>
+              <span x-show="!m.is_read" class="w-2 h-2 rounded-full bg-[#FF6B2B] shrink-0"></span>
+            </button>
+          </template>
+        </div>
+      </div>
+    </div>
 
-      <div class="space-y-3">
-        <template x-for="(p, idx) in projects" :key="p.id">
-          <div class="adm-card p-4 flex items-center gap-4">
-            <img :src="p.main_image_url" class="w-16 h-16 rounded-lg object-cover shrink-0 bg-zinc-800" :alt="p.title">
-            <div class="min-w-0 flex-1">
-              <p class="font-medium truncate" x-text="p.title"></p>
-              <p class="text-xs text-zinc-400 truncate" x-text="p.category"></p>
-              <div class="flex gap-2 mt-1.5">
-                <span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full" :class="p.published ? 'bg-emerald-500/15 text-emerald-400' : 'bg-zinc-700/50 text-zinc-400'" x-text="p.published ? 'Publicado' : 'Rascunho'"></span>
+    <!-- ─────────────── PROJETOS ─────────────── -->
+    <div x-show="tab==='projects'" x-cloak>
+
+      <div x-show="!formOpen">
+        <div class="flex items-center justify-between mb-5">
+          <p class="text-sm text-zinc-400" x-text="projects.length + ' projeto(s)'"></p>
+          <button @click="openNew()" class="adm-btn adm-btn-primary">+ Novo projeto</button>
+        </div>
+
+        <p x-show="loadingProjects" class="text-sm text-zinc-400">Carregando…</p>
+
+        <div class="space-y-3">
+          <template x-for="(p, idx) in projects" :key="p.id">
+            <div class="adm-card p-4 flex items-center gap-4">
+              <img :src="p.main_image_url" class="w-16 h-16 rounded-lg object-cover shrink-0 bg-zinc-800" :alt="p.title">
+              <div class="min-w-0 flex-1">
+                <p class="font-medium truncate" x-text="p.title"></p>
+                <p class="text-xs text-zinc-400 truncate" x-text="p.category"></p>
+                <div class="flex gap-2 mt-1.5">
+                  <span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full" :class="p.published ? 'bg-emerald-500/15 text-emerald-400' : 'bg-zinc-700/50 text-zinc-400'" x-text="p.published ? 'Publicado' : 'Rascunho'"></span>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <button @click="moveUp(idx)" :disabled="idx===0" class="adm-btn adm-btn-ghost px-2.5" title="Mover para cima">↑</button>
+                <button @click="moveDown(idx)" :disabled="idx===projects.length-1" class="adm-btn adm-btn-ghost px-2.5" title="Mover para baixo">↓</button>
+                <button @click="togglePublished(p)" class="adm-btn adm-btn-ghost">Publicar/ocultar</button>
+                <button @click="openEdit(p)" class="adm-btn adm-btn-ghost">Editar</button>
+                <button @click="remove(p)" class="adm-btn adm-btn-danger">Excluir</button>
               </div>
             </div>
-            <div class="flex items-center gap-1.5 shrink-0">
-              <button @click="moveUp(idx)" :disabled="idx===0" class="adm-btn adm-btn-ghost px-2.5" title="Mover para cima">↑</button>
-              <button @click="moveDown(idx)" :disabled="idx===projects.length-1" class="adm-btn adm-btn-ghost px-2.5" title="Mover para baixo">↓</button>
-              <button @click="togglePublished(p)" class="adm-btn adm-btn-ghost">Publicar/ocultar</button>
-              <button @click="openEdit(p)" class="adm-btn adm-btn-ghost">Editar</button>
-              <button @click="remove(p)" class="adm-btn adm-btn-danger">Excluir</button>
+          </template>
+        </div>
+      </div>
+
+      <!-- formulário -->
+      <form x-show="formOpen" @submit.prevent="save()" class="space-y-8">
+
+        <div class="flex items-center justify-between">
+          <h2 class="font-display font-bold text-xl" x-text="editingId ? 'Editar projeto' : 'Novo projeto'"></h2>
+          <button type="button" @click="closeForm()" class="adm-btn adm-btn-ghost">← Voltar</button>
+        </div>
+
+        <p x-show="saveError" x-text="saveError" class="text-sm text-rose-400"></p>
+
+        <!-- básico -->
+        <div class="adm-card p-6 grid sm:grid-cols-2 gap-5">
+          <div class="adm-field sm:col-span-2">
+            <label>Título *</label>
+            <input class="adm-input" type="text" x-model="form.title" @input="autoSlug()" required>
+          </div>
+          <div class="adm-field">
+            <label>Slug</label>
+            <input class="adm-input" type="text" x-model="form.slug" required>
+          </div>
+          <div class="adm-field">
+            <label>Categoria (ex: Geo Ads, E-mail, PDV)</label>
+            <input class="adm-input" type="text" x-model="form.category">
+          </div>
+          <div class="adm-field sm:col-span-2">
+            <label>Subtítulo / lead</label>
+            <input class="adm-input" type="text" x-model="form.lead">
+          </div>
+          <div class="adm-field sm:col-span-2">
+            <label>Descrição</label>
+            <textarea class="adm-input" rows="3" x-model="form.description"></textarea>
+          </div>
+          <div class="adm-field">
+            <label>Cor do case</label>
+            <input class="adm-input h-11 p-1" type="color" x-model="form.case_color">
+          </div>
+          <div class="adm-field">
+            <label>Tags (separadas por vírgula)</label>
+            <input class="adm-input" type="text" x-model="form.tagsInput" placeholder="Geo Ads, Revendas, PDV">
+          </div>
+          <div class="adm-field flex items-center gap-6 sm:col-span-2 pt-1">
+            <label class="flex items-center gap-2 !mb-0 normal-case text-sm text-zinc-200"><input type="checkbox" x-model="form.published"> Publicado</label>
+            <div class="flex items-center gap-2">
+              <span class="text-sm text-zinc-400">Ordem em "Projetos"</span>
+              <input class="adm-input w-20" type="number" x-model.number="form.display_order">
             </div>
+          </div>
+          <p class="text-xs text-zinc-500 sm:col-span-2 -mt-2">A página principal mostra sempre os 3 projetos publicados mais recentes, automaticamente — não precisa marcar nada aqui pra isso.</p>
+        </div>
+
+        <!-- imagem principal -->
+        <div class="adm-card p-6">
+          <p class="font-display font-bold mb-4">Imagem principal</p>
+          <div class="flex items-center gap-4">
+            <img x-show="form.main_image_url" :src="form.main_image_url" class="w-28 h-28 rounded-lg object-cover bg-zinc-800">
+            <div>
+              <label class="adm-btn adm-btn-ghost cursor-pointer inline-flex">
+                Escolher imagem
+                <input type="file" accept="image/*" class="hidden" @change="uploadMainImage($event)">
+              </label>
+              <span class="text-xs text-zinc-400 ml-2" x-text="form.main_image_name || 'Nenhuma imagem escolhida'"></span>
+              <p x-show="uploadingMain" class="text-xs text-zinc-400 mt-2">Enviando…</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- galeria -->
+        <div class="adm-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <p class="font-display font-bold">Galeria (opcional)</p>
+            <label class="adm-btn adm-btn-ghost cursor-pointer">
+              + Adicionar imagem
+              <input type="file" accept="image/*" class="hidden" @change="addGalleryImage($event)">
+            </label>
+          </div>
+          <p x-show="uploadingGallery" class="text-xs text-zinc-400 mb-3">Enviando…</p>
+          <div class="space-y-3">
+            <template x-for="(g, gi) in form.gallery" :key="gi">
+              <div class="flex items-center gap-3">
+                <img :src="g.url" class="w-14 h-14 rounded-lg object-cover bg-zinc-800 shrink-0">
+                <input class="adm-input" type="text" x-model="g.alt" placeholder="Texto alternativo">
+                <button type="button" @click="form.gallery.splice(gi,1)" class="adm-btn adm-btn-danger shrink-0">Remover</button>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- métricas -->
+        <div class="adm-card p-6">
+          <div class="flex items-center justify-between mb-4">
+            <p class="font-display font-bold">Métricas (aparecem como contadores no card)</p>
+            <button type="button" @click="form.metrics.push({value:'',prefix:'+',suffix:'%',label:''})" class="adm-btn adm-btn-ghost">+ Adicionar</button>
+          </div>
+          <div class="space-y-3">
+            <template x-for="(m, mi) in form.metrics" :key="mi">
+              <div class="grid grid-cols-[5rem_4rem_4rem_1fr_auto] gap-2 items-center">
+                <input class="adm-input" type="number" step="any" x-model.number="m.value" placeholder="Valor (ex: 27,1)">
+                <input class="adm-input" type="text" x-model="m.prefix" placeholder="Prefixo">
+                <input class="adm-input" type="text" x-model="m.suffix" placeholder="Sufixo">
+                <input class="adm-input" type="text" x-model="m.label" placeholder="Rótulo (ex: Penetração)">
+                <button type="button" @click="form.metrics.splice(mi,1)" class="adm-btn adm-btn-danger">✕</button>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- link externo -->
+        <div class="adm-card p-6 grid sm:grid-cols-2 gap-5">
+          <p class="font-display font-bold sm:col-span-2">Link externo (opcional — ex: assistir podcast)</p>
+          <div class="adm-field">
+            <label>Texto do link</label>
+            <input class="adm-input" type="text" x-model="form.external_link_label" placeholder="Assista o podcast →">
+          </div>
+          <div class="adm-field">
+            <label>URL</label>
+            <input class="adm-input" type="url" x-model="form.external_link_url">
+          </div>
+        </div>
+
+        <!-- estudo de caso -->
+        <div class="adm-card p-6">
+          <p class="font-display font-bold mb-1">Estudo de caso (modal "Ver estudo de caso")</p>
+          <p class="text-xs text-zinc-500 mb-5">Deixe tudo em branco para não exibir o botão de estudo de caso.</p>
+
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-sm font-medium text-zinc-300">Fatos rápidos</p>
+              <button type="button" @click="form.detail_quick_facts.push({label:'',value:''})" class="adm-btn adm-btn-ghost">+ Adicionar</button>
+            </div>
+            <div class="space-y-2">
+              <template x-for="(f, fi) in form.detail_quick_facts" :key="fi">
+                <div class="grid grid-cols-[1fr_1fr_auto] gap-2">
+                  <input class="adm-input" type="text" x-model="f.label" placeholder="Ano">
+                  <input class="adm-input" type="text" x-model="f.value" placeholder="2024">
+                  <button type="button" @click="form.detail_quick_facts.splice(fi,1)" class="adm-btn adm-btn-danger">✕</button>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-sm font-medium text-zinc-300">Parágrafos</p>
+              <button type="button" @click="form.detail_paragraphs.push('')" class="adm-btn adm-btn-ghost">+ Adicionar</button>
+            </div>
+            <div class="space-y-2">
+              <template x-for="(par, pi) in form.detail_paragraphs" :key="pi">
+                <div class="flex gap-2">
+                  <textarea class="adm-input" rows="2" x-model="form.detail_paragraphs[pi]"></textarea>
+                  <button type="button" @click="form.detail_paragraphs.splice(pi,1)" class="adm-btn adm-btn-danger shrink-0 h-fit">✕</button>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <div class="adm-field mb-6">
+            <label>Destaque / citação</label>
+            <textarea class="adm-input" rows="2" x-model="form.detail_highlight"></textarea>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <p class="text-sm font-medium text-zinc-300">Ações executadas</p>
+              <button type="button" @click="form.detail_action_items.push('')" class="adm-btn adm-btn-ghost">+ Adicionar</button>
+            </div>
+            <div class="space-y-2">
+              <template x-for="(a, ai) in form.detail_action_items" :key="ai">
+                <div class="flex gap-2">
+                  <input class="adm-input" type="text" x-model="form.detail_action_items[ai]">
+                  <button type="button" @click="form.detail_action_items.splice(ai,1)" class="adm-btn adm-btn-danger shrink-0">✕</button>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 pb-10">
+          <button type="submit" class="adm-btn adm-btn-primary" :disabled="saving">
+            <span x-text="saving ? 'Salvando…' : 'Salvar'"></span>
+          </button>
+          <button type="button" @click="closeForm()" class="adm-btn adm-btn-ghost">Cancelar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- ─────────────── MENSAGENS ─────────────── -->
+    <div x-show="tab==='messages'" x-cloak>
+      <div class="flex items-center justify-between mb-5">
+        <p class="text-sm text-zinc-400" x-text="messages.length + ' mensagem(ns)'"></p>
+      </div>
+      <p x-show="loadingMessages" class="text-sm text-zinc-400">Carregando…</p>
+      <p x-show="!loadingMessages && !messages.length" class="text-sm text-zinc-500">Nenhuma mensagem recebida ainda.</p>
+      <div class="space-y-3">
+        <template x-for="m in messages" :key="m.id">
+          <div class="adm-card p-5" :class="{'border-[#FF6B2B]/40': !m.is_read}">
+            <div class="flex items-start justify-between gap-4 mb-2">
+              <div>
+                <p class="font-medium" x-text="m.name"></p>
+                <a class="text-xs text-zinc-400 hover:text-[#FF6B2B]" :href="'mailto:' + m.email" x-text="m.email"></a>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span x-show="!m.is_read" class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-[#FF6B2B]/15 text-[#FF6B2B]">Nova</span>
+                <button type="button" @click="toggleMessageRead(m)" class="adm-btn adm-btn-ghost" x-text="m.is_read ? 'Marcar não lida' : 'Marcar lida'"></button>
+                <button type="button" @click="removeMessage(m)" class="adm-btn adm-btn-danger">Excluir</button>
+              </div>
+            </div>
+            <p class="text-sm text-zinc-300 whitespace-pre-wrap" x-text="m.message"></p>
+            <p class="text-xs text-zinc-500 mt-2" x-text="new Date(m.created_at).toLocaleString('pt-BR')"></p>
           </div>
         </template>
       </div>
     </div>
 
-    <!-- formulário -->
-    <form x-show="formOpen" @submit.prevent="save()" class="space-y-8">
-
-      <div class="flex items-center justify-between">
-        <h2 class="font-display font-bold text-xl" x-text="editingId ? 'Editar projeto' : 'Novo projeto'"></h2>
-        <button type="button" @click="closeForm()" class="adm-btn adm-btn-ghost">← Voltar</button>
-      </div>
-
-      <p x-show="saveError" x-text="saveError" class="text-sm text-rose-400"></p>
-
-      <!-- básico -->
-      <div class="adm-card p-6 grid sm:grid-cols-2 gap-5">
-        <div class="adm-field sm:col-span-2">
-          <label>Título *</label>
-          <input class="adm-input" type="text" x-model="form.title" @input="autoSlug()" required>
+    <!-- ─────────────── CONFIGURAÇÕES ─────────────── -->
+    <div x-show="tab==='settings'" x-cloak class="max-w-xl space-y-8">
+      <form @submit.prevent="saveSettings()" class="adm-card p-6 space-y-5">
+        <p class="font-display font-bold">Dados de contato do site</p>
+        <p x-show="settingsError" x-text="settingsError" class="text-sm text-rose-400"></p>
+        <p x-show="settingsSaved" class="text-sm text-emerald-400">Salvo!</p>
+        <div class="adm-field">
+          <label>WhatsApp (link wa.me)</label>
+          <input class="adm-input" type="url" x-model="settingsForm.whatsapp_url" placeholder="https://wa.me/55...">
         </div>
         <div class="adm-field">
-          <label>Slug</label>
-          <input class="adm-input" type="text" x-model="form.slug" required>
+          <label>Instagram</label>
+          <input class="adm-input" type="url" x-model="settingsForm.instagram_url">
         </div>
         <div class="adm-field">
-          <label>Categoria (ex: Geo Ads, E-mail, PDV)</label>
-          <input class="adm-input" type="text" x-model="form.category">
-        </div>
-        <div class="adm-field sm:col-span-2">
-          <label>Subtítulo / lead</label>
-          <input class="adm-input" type="text" x-model="form.lead">
-        </div>
-        <div class="adm-field sm:col-span-2">
-          <label>Descrição</label>
-          <textarea class="adm-input" rows="3" x-model="form.description"></textarea>
+          <label>LinkedIn</label>
+          <input class="adm-input" type="url" x-model="settingsForm.linkedin_url">
         </div>
         <div class="adm-field">
-          <label>Cor do case</label>
-          <input class="adm-input h-11 p-1" type="color" x-model="form.case_color">
+          <label>E-mail de contato</label>
+          <input class="adm-input" type="email" x-model="settingsForm.contact_email">
         </div>
-        <div class="adm-field">
-          <label>Tags (separadas por vírgula)</label>
-          <input class="adm-input" type="text" x-model="form.tagsInput" placeholder="Geo Ads, Revendas, PDV">
-        </div>
-        <div class="adm-field flex items-center gap-6 sm:col-span-2 pt-1">
-          <label class="flex items-center gap-2 !mb-0 normal-case text-sm text-zinc-200"><input type="checkbox" x-model="form.published"> Publicado</label>
-          <div class="flex items-center gap-2">
-            <span class="text-sm text-zinc-400">Ordem em "Projetos"</span>
-            <input class="adm-input w-20" type="number" x-model.number="form.display_order">
-          </div>
-        </div>
-        <p class="text-xs text-zinc-500 sm:col-span-2 -mt-2">A página principal mostra sempre os 3 projetos publicados mais recentes, automaticamente — não precisa marcar nada aqui pra isso.</p>
-      </div>
-
-      <!-- imagem principal -->
-      <div class="adm-card p-6">
-        <p class="font-display font-bold mb-4">Imagem principal</p>
-        <div class="flex items-center gap-4">
-          <img x-show="form.main_image_url" :src="form.main_image_url" class="w-28 h-28 rounded-lg object-cover bg-zinc-800">
-          <div>
-            <label class="adm-btn adm-btn-ghost cursor-pointer inline-flex">
-              Escolher imagem
-              <input type="file" accept="image/*" class="hidden" @change="uploadMainImage($event)">
-            </label>
-            <span class="text-xs text-zinc-400 ml-2" x-text="form.main_image_name || 'Nenhuma imagem escolhida'"></span>
-            <p x-show="uploadingMain" class="text-xs text-zinc-400 mt-2">Enviando…</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- galeria -->
-      <div class="adm-card p-6">
-        <div class="flex items-center justify-between mb-4">
-          <p class="font-display font-bold">Galeria (opcional)</p>
-          <label class="adm-btn adm-btn-ghost cursor-pointer">
-            + Adicionar imagem
-            <input type="file" accept="image/*" class="hidden" @change="addGalleryImage($event)">
-          </label>
-        </div>
-        <p x-show="uploadingGallery" class="text-xs text-zinc-400 mb-3">Enviando…</p>
-        <div class="space-y-3">
-          <template x-for="(g, gi) in form.gallery" :key="gi">
-            <div class="flex items-center gap-3">
-              <img :src="g.url" class="w-14 h-14 rounded-lg object-cover bg-zinc-800 shrink-0">
-              <input class="adm-input" type="text" x-model="g.alt" placeholder="Texto alternativo">
-              <button type="button" @click="form.gallery.splice(gi,1)" class="adm-btn adm-btn-danger shrink-0">Remover</button>
-            </div>
-          </template>
-        </div>
-      </div>
-
-      <!-- métricas -->
-      <div class="adm-card p-6">
-        <div class="flex items-center justify-between mb-4">
-          <p class="font-display font-bold">Métricas (aparecem como contadores no card)</p>
-          <button type="button" @click="form.metrics.push({value:'',prefix:'+',suffix:'%',label:''})" class="adm-btn adm-btn-ghost">+ Adicionar</button>
-        </div>
-        <div class="space-y-3">
-          <template x-for="(m, mi) in form.metrics" :key="mi">
-            <div class="grid grid-cols-[5rem_4rem_4rem_1fr_auto] gap-2 items-center">
-              <input class="adm-input" type="number" step="any" x-model.number="m.value" placeholder="Valor (ex: 27,1)">
-              <input class="adm-input" type="text" x-model="m.prefix" placeholder="Prefixo">
-              <input class="adm-input" type="text" x-model="m.suffix" placeholder="Sufixo">
-              <input class="adm-input" type="text" x-model="m.label" placeholder="Rótulo (ex: Penetração)">
-              <button type="button" @click="form.metrics.splice(mi,1)" class="adm-btn adm-btn-danger">✕</button>
-            </div>
-          </template>
-        </div>
-      </div>
-
-      <!-- link externo -->
-      <div class="adm-card p-6 grid sm:grid-cols-2 gap-5">
-        <p class="font-display font-bold sm:col-span-2">Link externo (opcional — ex: assistir podcast)</p>
-        <div class="adm-field">
-          <label>Texto do link</label>
-          <input class="adm-input" type="text" x-model="form.external_link_label" placeholder="Assista o podcast →">
-        </div>
-        <div class="adm-field">
-          <label>URL</label>
-          <input class="adm-input" type="url" x-model="form.external_link_url">
-        </div>
-      </div>
-
-      <!-- estudo de caso -->
-      <div class="adm-card p-6">
-        <p class="font-display font-bold mb-1">Estudo de caso (modal "Ver estudo de caso")</p>
-        <p class="text-xs text-zinc-500 mb-5">Deixe tudo em branco para não exibir o botão de estudo de caso.</p>
-
-        <div class="mb-6">
-          <div class="flex items-center justify-between mb-3">
-            <p class="text-sm font-medium text-zinc-300">Fatos rápidos</p>
-            <button type="button" @click="form.detail_quick_facts.push({label:'',value:''})" class="adm-btn adm-btn-ghost">+ Adicionar</button>
-          </div>
-          <div class="space-y-2">
-            <template x-for="(f, fi) in form.detail_quick_facts" :key="fi">
-              <div class="grid grid-cols-[1fr_1fr_auto] gap-2">
-                <input class="adm-input" type="text" x-model="f.label" placeholder="Ano">
-                <input class="adm-input" type="text" x-model="f.value" placeholder="2024">
-                <button type="button" @click="form.detail_quick_facts.splice(fi,1)" class="adm-btn adm-btn-danger">✕</button>
-              </div>
-            </template>
-          </div>
-        </div>
-
-        <div class="mb-6">
-          <div class="flex items-center justify-between mb-3">
-            <p class="text-sm font-medium text-zinc-300">Parágrafos</p>
-            <button type="button" @click="form.detail_paragraphs.push('')" class="adm-btn adm-btn-ghost">+ Adicionar</button>
-          </div>
-          <div class="space-y-2">
-            <template x-for="(par, pi) in form.detail_paragraphs" :key="pi">
-              <div class="flex gap-2">
-                <textarea class="adm-input" rows="2" x-model="form.detail_paragraphs[pi]"></textarea>
-                <button type="button" @click="form.detail_paragraphs.splice(pi,1)" class="adm-btn adm-btn-danger shrink-0 h-fit">✕</button>
-              </div>
-            </template>
-          </div>
-        </div>
-
-        <div class="adm-field mb-6">
-          <label>Destaque / citação</label>
-          <textarea class="adm-input" rows="2" x-model="form.detail_highlight"></textarea>
-        </div>
-
-        <div>
-          <div class="flex items-center justify-between mb-3">
-            <p class="text-sm font-medium text-zinc-300">Ações executadas</p>
-            <button type="button" @click="form.detail_action_items.push('')" class="adm-btn adm-btn-ghost">+ Adicionar</button>
-          </div>
-          <div class="space-y-2">
-            <template x-for="(a, ai) in form.detail_action_items" :key="ai">
-              <div class="flex gap-2">
-                <input class="adm-input" type="text" x-model="form.detail_action_items[ai]">
-                <button type="button" @click="form.detail_action_items.splice(ai,1)" class="adm-btn adm-btn-danger shrink-0">✕</button>
-              </div>
-            </template>
-          </div>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-3 pb-10">
-        <button type="submit" class="adm-btn adm-btn-primary" :disabled="saving">
-          <span x-text="saving ? 'Salvando…' : 'Salvar'"></span>
+        <button type="submit" class="adm-btn adm-btn-primary" :disabled="savingSettings">
+          <span x-text="savingSettings ? 'Salvando…' : 'Salvar alterações'"></span>
         </button>
-        <button type="button" @click="closeForm()" class="adm-btn adm-btn-ghost">Cancelar</button>
+      </form>
+
+      <form @submit.prevent="changePassword()" class="adm-card p-6 space-y-5">
+        <p class="font-display font-bold">Trocar senha</p>
+        <p x-show="passwordError" x-text="passwordError" class="text-sm text-rose-400"></p>
+        <p x-show="passwordSaved" class="text-sm text-emerald-400">Senha atualizada!</p>
+        <div class="adm-field">
+          <label>Nova senha</label>
+          <input class="adm-input" type="password" x-model="newPassword" minlength="6" required autocomplete="new-password">
+        </div>
+        <button type="submit" class="adm-btn adm-btn-primary" :disabled="savingPassword">
+          <span x-text="savingPassword ? 'Salvando…' : 'Trocar senha'"></span>
+        </button>
+      </form>
+    </div>
+
+    <!-- ─────────────── LOGS ─────────────── -->
+    <div x-show="tab==='logs'" x-cloak>
+      <div class="flex items-center justify-between mb-5">
+        <p class="text-sm text-zinc-400">Ações e erros desta sessão do painel (não fica salvo ao recarregar a página).</p>
+        <button type="button" @click="logs = []" class="adm-btn adm-btn-ghost">Limpar</button>
       </div>
-    </form>
+      <p x-show="!logs.length" class="text-sm text-zinc-500">Nenhum evento registrado ainda nesta sessão.</p>
+      <div class="space-y-2 font-mono text-xs">
+        <template x-for="(l, li) in logs" :key="li">
+          <div class="adm-card p-3" :class="l.level === 'error' ? 'border-rose-500/40' : 'border-white/10'">
+            <div class="flex items-center justify-between gap-4 mb-1">
+              <span class="uppercase font-bold" :class="l.level === 'error' ? 'text-rose-400' : 'text-emerald-400'" x-text="l.level"></span>
+              <span class="text-zinc-500" x-text="l.time"></span>
+            </div>
+            <p class="text-zinc-300" x-text="l.message"></p>
+          </div>
+        </template>
+      </div>
+    </div>
+
   </div>
 
   <script src="js/admin.js"></script>

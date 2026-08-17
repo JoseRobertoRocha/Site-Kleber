@@ -40,6 +40,8 @@ function adminApp() {
     loginError: '',
     loggingIn: false,
 
+    tab: 'dashboard',
+
     projects: [],
     loadingProjects: false,
 
@@ -51,15 +53,45 @@ function adminApp() {
     uploadingMain: false,
     uploadingGallery: false,
 
+    messages: [],
+    loadingMessages: false,
+
+    settingsForm: { whatsapp_url: '', instagram_url: '', linkedin_url: '', contact_email: '' },
+    settingsError: '',
+    settingsSaved: false,
+    savingSettings: false,
+    newPassword: '',
+    passwordError: '',
+    passwordSaved: false,
+    savingPassword: false,
+
+    logs: [],
+
+    get unreadCount() {
+      return this.messages.filter(m => !m.is_read).length;
+    },
+
+    log(level, message) {
+      this.logs.unshift({ level, message, time: new Date().toLocaleTimeString('pt-BR') });
+      if (this.logs.length > 200) this.logs.length = 200;
+    },
+
     async init() {
       const { data: { session } } = await window.sb.auth.getSession();
       this.session = session;
-      if (this.session) this.loadProjects();
+      if (this.session) this.loadAll();
 
       window.sb.auth.onAuthStateChange((_event, session) => {
+        const wasLoggedOut = !this.session;
         this.session = session;
-        if (this.session) this.loadProjects();
+        if (this.session && wasLoggedOut) this.loadAll();
       });
+    },
+
+    loadAll() {
+      this.loadProjects();
+      this.loadMessages();
+      this.loadSettings();
     },
 
     async login() {
@@ -76,7 +108,9 @@ function adminApp() {
     async logout() {
       await window.sb.auth.signOut();
       this.projects = [];
+      this.messages = [];
       this.formOpen = false;
+      this.tab = 'dashboard';
     },
 
     async loadProjects() {
@@ -87,10 +121,91 @@ function adminApp() {
         .order('display_order', { ascending: true });
       this.loadingProjects = false;
       if (error) {
-        console.error(error);
+        this.log('error', `Falha ao carregar projetos: ${error.message}`);
         return;
       }
       this.projects = data || [];
+    },
+
+    async loadMessages() {
+      this.loadingMessages = true;
+      const { data, error } = await window.sb
+        .from('messages')
+        .select('*')
+        .order('created_at', { ascending: false });
+      this.loadingMessages = false;
+      if (error) {
+        this.log('error', `Falha ao carregar mensagens: ${error.message}`);
+        return;
+      }
+      this.messages = data || [];
+    },
+
+    async toggleMessageRead(m) {
+      const { error } = await window.sb.from('messages').update({ is_read: !m.is_read }).eq('id', m.id);
+      if (error) { this.log('error', error.message); return; }
+      this.loadMessages();
+    },
+
+    async removeMessage(m) {
+      if (!confirm(`Excluir mensagem de "${m.name}"?`)) return;
+      const { error } = await window.sb.from('messages').delete().eq('id', m.id);
+      if (error) { this.log('error', error.message); return; }
+      this.log('info', `Mensagem de ${m.name} excluída.`);
+      this.loadMessages();
+    },
+
+    async loadSettings() {
+      const { data, error } = await window.sb.from('site_settings').select('*').eq('id', 1).maybeSingle();
+      if (error) {
+        this.log('error', `Falha ao carregar configurações: ${error.message}`);
+        return;
+      }
+      if (data) {
+        this.settingsForm = {
+          whatsapp_url: data.whatsapp_url || '',
+          instagram_url: data.instagram_url || '',
+          linkedin_url: data.linkedin_url || '',
+          contact_email: data.contact_email || '',
+        };
+      }
+    },
+
+    async saveSettings() {
+      this.settingsError = '';
+      this.settingsSaved = false;
+      this.savingSettings = true;
+      const { error } = await window.sb.from('site_settings').update(this.settingsForm).eq('id', 1);
+      this.savingSettings = false;
+      if (error) {
+        this.settingsError = error.message;
+        this.log('error', `Falha ao salvar configurações: ${error.message}`);
+        return;
+      }
+      this.settingsSaved = true;
+      this.log('info', 'Configurações de contato atualizadas.');
+      setTimeout(() => { this.settingsSaved = false; }, 3000);
+    },
+
+    async changePassword() {
+      this.passwordError = '';
+      this.passwordSaved = false;
+      if (this.newPassword.length < 6) {
+        this.passwordError = 'A senha precisa ter pelo menos 6 caracteres.';
+        return;
+      }
+      this.savingPassword = true;
+      const { error } = await window.sb.auth.updateUser({ password: this.newPassword });
+      this.savingPassword = false;
+      if (error) {
+        this.passwordError = error.message;
+        this.log('error', `Falha ao trocar senha: ${error.message}`);
+        return;
+      }
+      this.newPassword = '';
+      this.passwordSaved = true;
+      this.log('info', 'Senha do admin trocada.');
+      setTimeout(() => { this.passwordSaved = false; }, 3000);
     },
 
     openNew() {
@@ -143,6 +258,7 @@ function adminApp() {
     },
 
     async uploadFile(file) {
+      this.log('info', `Pedindo URL de upload para "${file.name}" (${file.type})…`);
       const token = await this.getAccessToken();
       const res = await fetch('/api/r2-upload-url', {
         method: 'POST',
@@ -150,18 +266,26 @@ function adminApp() {
         body: JSON.stringify({ fileName: file.name, contentType: file.type }),
       });
       if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.error || 'Falha ao preparar upload');
+        const rawText = await res.text().catch(() => '');
+        let message = rawText;
+        try { message = JSON.parse(rawText).error || rawText; } catch { /* corpo nao era JSON */ }
+        this.log('error', `/api/r2-upload-url respondeu ${res.status}: ${message || '(sem corpo)'}`);
+        throw new Error(message || 'Falha ao preparar upload');
       }
       const { uploadUrl, publicUrl } = await res.json();
+      this.log('info', 'URL de upload recebida, enviando arquivo para o R2…');
 
       const putRes = await fetch(uploadUrl, {
         method: 'PUT',
         headers: { 'Content-Type': file.type },
         body: file,
       });
-      if (!putRes.ok) throw new Error('Falha ao enviar imagem');
+      if (!putRes.ok) {
+        this.log('error', `Upload PUT ao R2 respondeu ${putRes.status}`);
+        throw new Error('Falha ao enviar imagem');
+      }
 
+      this.log('info', `Upload concluído: ${publicUrl}`);
       return publicUrl;
     },
 
@@ -239,8 +363,10 @@ function adminApp() {
 
       if (error) {
         this.saveError = error.message;
+        this.log('error', `Falha ao salvar projeto "${payload.title}": ${error.message}`);
         return;
       }
+      this.log('info', `Projeto "${payload.title}" salvo.`);
       this.formOpen = false;
       this.loadProjects();
     },
@@ -250,8 +376,10 @@ function adminApp() {
       const { error } = await window.sb.from('projects').delete().eq('id', p.id);
       if (error) {
         alert(error.message);
+        this.log('error', `Falha ao excluir "${p.title}": ${error.message}`);
         return;
       }
+      this.log('info', `Projeto "${p.title}" excluído.`);
       this.loadProjects();
     },
 

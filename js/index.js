@@ -6,6 +6,11 @@ function app() {
     s: 'hero',
     caseOpen: null,
     cases: [],
+    settings: { whatsapp_url: '', instagram_url: '', linkedin_url: '', contact_email: '' },
+    contactForm: { name: '', email: '', message: '' },
+    contactSending: false,
+    contactSent: false,
+    contactError: '',
     gx: 50,
     gy: 50,
     formationText: '',
@@ -34,6 +39,9 @@ function app() {
 
       await this.refreshCases();
       subscribeToProjectChanges(() => this.refreshCases());
+
+      this.settings = await fetchSiteSettings();
+      subscribeToSettingsChanges(async () => { this.settings = await fetchSiteSettings(); });
     },
 
     async refreshCases() {
@@ -46,6 +54,24 @@ function app() {
 
     hasDetail(p) {
       return caseHasDetail(p);
+    },
+
+    async sendContactMessage() {
+      this.contactError = '';
+      if (!this.contactForm.name.trim() || !this.contactForm.email.trim() || !this.contactForm.message.trim()) {
+        this.contactError = 'Preencha nome, e-mail e mensagem.';
+        return;
+      }
+      this.contactSending = true;
+      try {
+        await submitContactMessage(this.contactForm);
+        this.contactSent = true;
+        this.contactForm = { name: '', email: '', message: '' };
+      } catch (err) {
+        this.contactError = 'Não foi possível enviar. Tente novamente ou chame no WhatsApp.';
+      } finally {
+        this.contactSending = false;
+      }
     },
 
     typeFormation() {
