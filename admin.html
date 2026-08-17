@@ -118,6 +118,23 @@
     <!-- ─────────────── PROJETOS ─────────────── -->
     <div x-show="tab==='projects'" x-cloak>
 
+      <div class="adm-card p-5 mb-6">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-sm font-medium">Armazenamento (Cloudflare R2)</p>
+          <p class="text-xs text-zinc-400">
+            <span x-text="loadingStorage ? 'Calculando…' : storageUsedLabel"></span>
+            <span x-text="' / ' + storageLimitLabel"></span>
+          </p>
+        </div>
+        <div class="w-full h-2 rounded-full bg-white/10 overflow-hidden">
+          <div class="h-full rounded-full transition-all duration-500"
+               :class="storagePercent >= 100 ? 'bg-rose-500' : storagePercent >= 85 ? 'bg-amber-500' : 'bg-emerald-500'"
+               :style="'width:' + storagePercent + '%'"></div>
+        </div>
+        <p x-show="storagePercent >= 100" class="text-xs text-rose-400 mt-2">Limite de 10 GB atingido — novos uploads de imagem ficam bloqueados até você apagar imagens antigas.</p>
+        <p x-show="storagePercent >= 85 && storagePercent < 100" class="text-xs text-amber-400 mt-2">Perto do limite de 10 GB.</p>
+      </div>
+
       <div x-show="!formOpen">
         <div class="flex items-center justify-between mb-5">
           <p class="text-sm text-zinc-400" x-text="projects.length + ' projeto(s)'"></p>

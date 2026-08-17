@@ -67,8 +67,24 @@ function adminApp() {
 
     logs: [],
 
+    storageUsedBytes: 0,
+    storageLimitBytes: 10 * 1024 * 1024 * 1024,
+    loadingStorage: false,
+
     get unreadCount() {
       return this.messages.filter(m => !m.is_read).length;
+    },
+
+    get storagePercent() {
+      return this.storageLimitBytes ? Math.min((this.storageUsedBytes / this.storageLimitBytes) * 100, 100) : 0;
+    },
+
+    get storageUsedLabel() {
+      return (this.storageUsedBytes / (1024 ** 3)).toFixed(2) + ' GB';
+    },
+
+    get storageLimitLabel() {
+      return (this.storageLimitBytes / (1024 ** 3)).toFixed(0) + ' GB';
     },
 
     log(level, message) {
@@ -92,6 +108,23 @@ function adminApp() {
       this.loadProjects();
       this.loadMessages();
       this.loadSettings();
+      this.loadStorageUsage();
+    },
+
+    async loadStorageUsage() {
+      this.loadingStorage = true;
+      try {
+        const token = await this.getAccessToken();
+        const res = await fetch('/api/r2-usage', { headers: { Authorization: `Bearer ${token}` } });
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(body.error || 'Falha ao carregar armazenamento');
+        this.storageUsedBytes = body.usedBytes;
+        this.storageLimitBytes = body.limitBytes;
+      } catch (err) {
+        this.log('error', `Armazenamento: ${err.message}`);
+      } finally {
+        this.loadingStorage = false;
+      }
     },
 
     async login() {
@@ -263,7 +296,7 @@ function adminApp() {
       const res = await fetch('/api/r2-upload-url', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ fileName: file.name, contentType: file.type }),
+        body: JSON.stringify({ fileName: file.name, contentType: file.type, fileSize: file.size }),
       });
       if (!res.ok) {
         const rawText = await res.text().catch(() => '');
@@ -286,6 +319,7 @@ function adminApp() {
       }
 
       this.log('info', `Upload concluído: ${publicUrl}`);
+      this.loadStorageUsage();
       return publicUrl;
     },
 

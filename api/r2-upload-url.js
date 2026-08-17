@@ -1,11 +1,13 @@
 const { randomUUID } = require('node:crypto');
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { PutObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
-const { createClient } = require('@supabase/supabase-js');
+const { requireUser } = require('./_auth');
+const { buildS3Client, getBucketUsageBytes, STORAGE_LIMIT_BYTES } = require('./_r2-client');
 
 // Emite uma URL PUT pre-assinada para o bucket R2. So responde se o pedido
-// trouxer um access token valido de uma sessao Supabase autenticada — sem
-// isso, qualquer visitante do site conseguiria subir arquivos no bucket.
+// trouxer um access token valido de uma sessao Supabase autenticada, e so
+// se o upload nao estourar o limite de armazenamento — as duas checagens
+// sao feitas aqui (servidor), nunca so no front.
 module.exports = async function handler(req, res) {
   let step = 'start';
   try {
@@ -14,10 +16,10 @@ module.exports = async function handler(req, res) {
       return;
     }
 
-    const authHeader = req.headers.authorization || '';
-    const token = authHeader.replace(/^Bearer\s+/i, '');
-    if (!token) {
-      res.status(401).json({ error: 'Token de autenticação ausente' });
+    step = 'auth';
+    const auth = await requireUser(req);
+    if (auth.error) {
+      res.status(auth.status).json({ error: auth.error });
       return;
     }
 
@@ -28,15 +30,7 @@ module.exports = async function handler(req, res) {
       return;
     }
 
-    step = 'supabase auth.getUser';
-    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    if (authError || !user) {
-      res.status(401).json({ error: 'Sessão inválida' });
-      return;
-    }
-
-    const { fileName, contentType } = req.body || {};
+    const { fileName, contentType, fileSize } = req.body || {};
     if (!fileName || !contentType) {
       res.status(400).json({ error: 'fileName e contentType são obrigatórios' });
       return;
@@ -46,19 +40,19 @@ module.exports = async function handler(req, res) {
       return;
     }
 
+    const size = Number(fileSize) || 0;
+
+    step = 'check storage limit';
+    const s3 = buildS3Client();
+    const usedBytes = await getBucketUsageBytes(s3);
+    if (usedBytes + size > STORAGE_LIMIT_BYTES) {
+      const usedGb = (usedBytes / (1024 ** 3)).toFixed(2);
+      res.status(413).json({ error: `Limite de armazenamento de 10 GB atingido (${usedGb} GB em uso). Apague imagens antigas para liberar espaço.` });
+      return;
+    }
+
     const safeExt = (fileName.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
     const key = `projects/${randomUUID()}.${safeExt}`;
-
-    step = 'build S3 client';
-    const s3 = new S3Client({
-      region: 'auto',
-      endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-      forcePathStyle: true,
-      credentials: {
-        accessKeyId: process.env.R2_ACCESS_KEY_ID,
-        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
-      },
-    });
 
     const command = new PutObjectCommand({
       Bucket: process.env.R2_BUCKET_NAME,
@@ -72,6 +66,6 @@ module.exports = async function handler(req, res) {
     res.status(200).json({ uploadUrl, publicUrl });
   } catch (err) {
     console.error(`Erro ao gerar URL do R2 (etapa: ${step}):`, err);
-    res.status(500).json({ error: `[${step}] ${err && err.message ? err.message : String(err)}` });
+    res.status(500).json({ error: `[${step}] ${err?.message || String(err)}` });
   }
 };
