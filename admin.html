@@ -55,7 +55,7 @@
 
   <!-- ═══ PAINEL ═══ -->
   <div x-show="session" class="max-w-5xl mx-auto px-6 py-10">
-    <header class="flex items-center justify-between mb-6">
+    <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
       <div>
         <p class="text-xs font-medium text-[#FF6B2B] tracking-[0.3em] uppercase mb-2">Painel</p>
         <h1 class="font-display font-bold text-3xl">Kleber S. Lago</h1>
@@ -145,16 +145,18 @@
 
         <div class="space-y-3">
           <template x-for="(p, idx) in projects" :key="p.id">
-            <div class="adm-card p-4 flex items-center gap-4">
-              <img :src="p.main_image_url" class="w-16 h-16 rounded-lg object-cover shrink-0 bg-zinc-800" :alt="p.title">
-              <div class="min-w-0 flex-1">
-                <p class="font-medium truncate" x-text="p.title"></p>
-                <p class="text-xs text-zinc-400 truncate" x-text="p.category"></p>
-                <div class="flex gap-2 mt-1.5">
-                  <span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full" :class="p.published ? 'bg-emerald-500/15 text-emerald-400' : 'bg-zinc-700/50 text-zinc-400'" x-text="p.published ? 'Publicado' : 'Rascunho'"></span>
+            <div class="adm-card p-4 flex flex-col sm:flex-row sm:items-center gap-4">
+              <div class="flex items-center gap-4 min-w-0">
+                <img :src="p.main_image_url" class="w-16 h-16 rounded-lg object-cover shrink-0 bg-zinc-800" :alt="p.title">
+                <div class="min-w-0 flex-1">
+                  <p class="font-medium truncate" x-text="p.title"></p>
+                  <p class="text-xs text-zinc-400 truncate" x-text="p.category"></p>
+                  <div class="flex gap-2 mt-1.5">
+                    <span class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full" :class="p.published ? 'bg-emerald-500/15 text-emerald-400' : 'bg-zinc-700/50 text-zinc-400'" x-text="p.published ? 'Publicado' : 'Rascunho'"></span>
+                  </div>
                 </div>
               </div>
-              <div class="flex items-center gap-1.5 shrink-0">
+              <div class="flex items-center gap-1.5 flex-wrap sm:shrink-0 sm:justify-end">
                 <button @click="moveUp(idx)" :disabled="idx===0" class="adm-btn adm-btn-ghost px-2.5" title="Mover para cima">↑</button>
                 <button @click="moveDown(idx)" :disabled="idx===projects.length-1" class="adm-btn adm-btn-ghost px-2.5" title="Mover para baixo">↓</button>
                 <button @click="togglePublished(p)" class="adm-btn adm-btn-ghost">Publicar/ocultar</button>
@@ -261,7 +263,7 @@
           </div>
           <div class="space-y-3">
             <template x-for="(m, mi) in form.metrics" :key="mi">
-              <div class="grid grid-cols-[5rem_4rem_4rem_1fr_auto] gap-2 items-center">
+              <div class="grid grid-cols-2 sm:grid-cols-[5rem_4rem_4rem_1fr_auto] gap-2 items-center">
                 <input class="adm-input" type="number" step="any" x-model.number="m.value" placeholder="Valor (ex: 27,1)">
                 <input class="adm-input" type="text" x-model="m.prefix" placeholder="Prefixo">
                 <input class="adm-input" type="text" x-model="m.suffix" placeholder="Sufixo">
@@ -361,12 +363,12 @@
       <div class="space-y-3">
         <template x-for="m in messages" :key="m.id">
           <div class="adm-card p-5" :class="{'border-[#FF6B2B]/40': !m.is_read}">
-            <div class="flex items-start justify-between gap-4 mb-2">
-              <div>
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-2">
+              <div class="min-w-0">
                 <p class="font-medium" x-text="m.name"></p>
-                <a class="text-xs text-zinc-400 hover:text-[#FF6B2B]" :href="'mailto:' + m.email" x-text="m.email"></a>
+                <a class="text-xs text-zinc-400 hover:text-[#FF6B2B] break-all" :href="'mailto:' + m.email" x-text="m.email"></a>
               </div>
-              <div class="flex items-center gap-2 shrink-0">
+              <div class="flex items-center gap-2 flex-wrap sm:shrink-0">
                 <span x-show="!m.is_read" class="text-[10px] uppercase tracking-wide px-2 py-0.5 rounded-full bg-[#FF6B2B]/15 text-[#FF6B2B]">Nova</span>
                 <button type="button" @click="toggleMessageRead(m)" class="adm-btn adm-btn-ghost" x-text="m.is_read ? 'Marcar não lida' : 'Marcar lida'"></button>
                 <button type="button" @click="removeMessage(m)" class="adm-btn adm-btn-danger">Excluir</button>
