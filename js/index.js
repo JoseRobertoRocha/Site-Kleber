@@ -117,7 +117,9 @@ function app() {
     },
 
     animateCounter(el) {
-      const target = parseFloat(el.dataset.target || '0');
+      const rawTarget = el.dataset.target || '0';
+      const target = Number.parseFloat(rawTarget);
+      const decimals = rawTarget.includes('.') ? rawTarget.split('.')[1].length : 0;
       const prefix = el.dataset.prefix || '';
       const suffix = el.dataset.suffix || '';
       const duration = 1200;
@@ -125,7 +127,7 @@ function app() {
       const step = now => {
         const progress = Math.min((now - start) / duration, 1);
         const eased = 1 - Math.pow(1 - progress, 3);
-        el.textContent = prefix + Math.round(target * eased) + suffix;
+        el.textContent = prefix + (target * eased).toFixed(decimals) + suffix;
         if (progress < 1) requestAnimationFrame(step);
       };
       requestAnimationFrame(step);

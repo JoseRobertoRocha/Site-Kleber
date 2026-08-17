@@ -187,7 +187,7 @@
         <div class="space-y-3">
           <template x-for="(m, mi) in form.metrics" :key="mi">
             <div class="grid grid-cols-[5rem_4rem_4rem_1fr_auto] gap-2 items-center">
-              <input class="adm-input" type="number" x-model.number="m.value" placeholder="Valor">
+              <input class="adm-input" type="number" step="any" x-model.number="m.value" placeholder="Valor (ex: 27,1)">
               <input class="adm-input" type="text" x-model="m.prefix" placeholder="Prefixo">
               <input class="adm-input" type="text" x-model="m.suffix" placeholder="Sufixo">
               <input class="adm-input" type="text" x-model="m.label" placeholder="Rótulo (ex: Penetração)">
