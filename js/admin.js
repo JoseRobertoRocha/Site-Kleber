@@ -9,6 +9,7 @@ function emptyForm() {
     tagsInput: '',
     metrics: [],
     main_image_url: null,
+    main_image_name: '',
     gallery: [],
     external_link_label: '',
     external_link_url: '',
@@ -113,6 +114,7 @@ function adminApp() {
         tagsInput: (p.tags || []).join(', '),
         metrics: JSON.parse(JSON.stringify(p.metrics || [])),
         main_image_url: p.main_image_url || null,
+        main_image_name: p.main_image_url ? 'Imagem atual' : '',
         gallery: JSON.parse(JSON.stringify(p.gallery || [])),
         external_link_label: p.external_link_label || '',
         external_link_url: p.external_link_url || '',
@@ -169,6 +171,7 @@ function adminApp() {
       this.uploadingMain = true;
       try {
         this.form.main_image_url = await this.uploadFile(file);
+        this.form.main_image_name = file.name;
       } catch (err) {
         this.saveError = err.message;
       } finally {

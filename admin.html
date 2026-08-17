@@ -151,7 +151,11 @@
         <div class="flex items-center gap-4">
           <img x-show="form.main_image_url" :src="form.main_image_url" class="w-28 h-28 rounded-lg object-cover bg-zinc-800">
           <div>
-            <input type="file" accept="image/*" @change="uploadMainImage($event)">
+            <label class="adm-btn adm-btn-ghost cursor-pointer inline-flex">
+              Escolher imagem
+              <input type="file" accept="image/*" class="hidden" @change="uploadMainImage($event)">
+            </label>
+            <span class="text-xs text-zinc-400 ml-2" x-text="form.main_image_name || 'Nenhuma imagem escolhida'"></span>
             <p x-show="uploadingMain" class="text-xs text-zinc-400 mt-2">Enviando…</p>
           </div>
         </div>
