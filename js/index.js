@@ -32,6 +32,11 @@ function app() {
       this.initCounters();
       this.initBars();
 
+      await this.refreshCases();
+      subscribeToProjectChanges(() => this.refreshCases());
+    },
+
+    async refreshCases() {
       this.cases = await fetchFeaturedCases();
       this.$nextTick(() => {
         document.querySelectorAll('.reveal').forEach(el => this.revealObserver.observe(el));

@@ -1,7 +1,4 @@
--- Executar no SQL editor do Supabase (projeto novo).
--- Cria a tabela de projetos usada pelo site publico e pelo painel admin.html,
--- as policies de RLS e o seed com os 14 cases que hoje estao hardcoded em
--- principal.html (3, destaque) e projetos.html (11).
+
 
 create extension if not exists pgcrypto;
 
@@ -47,6 +44,11 @@ create trigger projects_set_updated_at
   for each row execute function public.set_updated_at();
 
 alter table public.projects enable row level security;
+
+-- Habilita Realtime na tabela: o site publico escuta mudancas e atualiza
+-- sozinho (sem F5) quando algo e publicado/editado/excluido no painel.
+-- RLS continua se aplicando as mensagens que chegam pro cliente anonimo.
+alter publication supabase_realtime add table public.projects;
 
 drop policy if exists "public read published projects" on public.projects;
 create policy "public read published projects"

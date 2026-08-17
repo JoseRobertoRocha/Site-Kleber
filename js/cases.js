@@ -39,6 +39,11 @@ function casesPage() {
     cases: [],
 
     async init() {
+      await this.refresh();
+      subscribeToProjectChanges(() => this.refresh());
+    },
+
+    async refresh() {
       this.cases = await fetchAllCases();
       this.$nextTick(() => {
         const obs = new IntersectionObserver(entries => {
@@ -53,6 +58,16 @@ function casesPage() {
       });
     }
   };
+}
+
+// Reexecuta onChange sempre que a tabela projects mudar (insert/update/delete),
+// pra pagina publica atualizar sozinha sem precisar de F5. Exige que a
+// replicacao Realtime esteja habilitada pra tabela "projects" no Supabase.
+function subscribeToProjectChanges(onChange) {
+  return window.sb
+    .channel('projects-public-changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'projects' }, onChange)
+    .subscribe();
 }
 
 function caseHasDetail(p) {
