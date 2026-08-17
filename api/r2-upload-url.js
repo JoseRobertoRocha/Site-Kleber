@@ -28,6 +28,13 @@ export default async function handler(req, res) {
       return;
     }
 
+    if (req.query && req.query.probe === 'any-fetch') {
+      step = 'fetch unrelated external host';
+      const r = await fetch('https://api.github.com');
+      res.status(200).json({ ok: true, probe: 'any-fetch', status: r.status });
+      return;
+    }
+
     if (req.query && req.query.probe === 'raw-fetch') {
       step = 'raw fetch to supabase auth';
       const r = await fetch(`${process.env.SUPABASE_URL}/auth/v1/user`, {
