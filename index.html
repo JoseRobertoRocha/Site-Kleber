@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Kleber S. Lago</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  html,body{margin:0;height:100%;background:#000;overflow:hidden}
+  .splash{position:relative;height:100vh;height:100dvh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .splash-glow{position:absolute;top:33%;left:50%;transform:translate(-50%,-50%);width:26rem;height:26rem;background:rgba(255,107,43,.12);border-radius:50%;filter:blur(55px);pointer-events:none}
+  .splash-inner{position:relative;text-align:center;padding:0 1rem;max-width:97vw}
+  .splash .preloader-name{font-weight:700;font-size:clamp(1.6rem,8.2vw,8.5rem);letter-spacing:-.02em;line-height:1.05;white-space:nowrap}
+</style>
+</head>
+<body>
+  <div class="splash" aria-hidden="true">
+    <div class="splash-glow"></div>
+    <div class="splash-inner">
+      <p class="preloader-name">Kleber S. Lago</p>
+      <div class="preloader-bar"><div class="preloader-bar-fill"></div></div>
+    </div>
+  </div>
+  <script>
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setTimeout(function () {
+      window.location.href = 'principal.html';
+    }, reduceMotion ? 0 : 4200);
+  </script>
+</body>
+</html>

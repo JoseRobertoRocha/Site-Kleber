@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Projetos profissionais de marketing, conteúdo, e-mail, lançamentos e social.">
+  <title>Projetos Profissionais | Kleber S. Lago</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/cases.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="portfolio-page text-white antialiased" x-data="casesPage()" @keydown.escape.window="zoomImg=null">
+  <header class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-black/45 backdrop-blur-xl">
+    <nav class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="principal.html" class="font-display font-bold text-xl tracking-tight">
+        Kleber <span class="text-[#FF6B2B]">S. Lago</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8 text-sm text-zinc-400">
+        <a href="principal.html" class="portfolio-link">Inicio</a>
+        <a href="projetos.html" class="portfolio-link text-white">Projetos</a>
+        <a href="curriculo.html" class="portfolio-link">Curriculo</a>
+      </div>
+      <a href="principal.html#contact" class="portfolio-cta text-sm">Whatsapp</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="portfolio-hero relative overflow-hidden pt-36 pb-24">
+      <div class="portfolio-glow portfolio-glow-a"></div>
+      <div class="portfolio-glow portfolio-glow-b"></div>
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <p class="reveal text-xs uppercase tracking-[0.35em] text-[#FF6B2B] mb-6">Portfólio de alto impacto</p>
+        <h1 class="reveal d1 font-display font-bold text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight max-w-5xl">
+          Projetos Profissionais
+        </h1>
+        <p class="reveal d2 mt-7 text-lg md:text-2xl text-zinc-400 max-w-3xl">
+          Marketing & Conteúdo • E-mail • Lançamentos • Social
+        </p>
+      </div>
+    </section>
+
+    <section id="cases-list" class="portfolio-stack max-w-7xl mx-auto px-6 pb-28 space-y-20">
+      <template x-for="p in cases" :key="p.id">
+        <article class="portfolio-case reveal" :class="{compact: !(p.tags && p.tags.length) && !(p.metrics && p.metrics.length)}" :style="'--case-color:' + p.case_color">
+          <div class="portfolio-copy">
+            <span class="portfolio-category" x-text="p.category"></span>
+            <h2 x-text="p.title"></h2>
+            <p class="portfolio-lead" x-text="p.lead"></p>
+            <p x-text="p.description"></p>
+          </div>
+          <div class="portfolio-visual" :class="{single: !(p.gallery && p.gallery.length)}">
+            <button type="button" class="portfolio-image-trigger" @click="zoomImg={src:p.main_image_url, alt:p.title}" aria-label="Expandir imagem">
+              <img class="portfolio-main-img" :src="p.main_image_url" :alt="p.title">
+            </button>
+            <div class="portfolio-gallery" x-show="p.gallery && p.gallery.length">
+              <template x-for="(g, gi) in (p.gallery || [])" :key="gi">
+                <button type="button" class="portfolio-image-trigger" @click="zoomImg={src:g.url, alt:g.alt || p.title}" aria-label="Expandir imagem">
+                  <img :src="g.url" :alt="g.alt || p.title">
+                </button>
+              </template>
+            </div>
+          </div>
+        </article>
+      </template>
+    </section>
+  <div x-show="zoomImg" x-cloak class="portfolio-lightbox" @click.self="zoomImg=null" role="dialog" aria-modal="true">
+      <button type="button" class="portfolio-lightbox-close" @click="zoomImg=null" aria-label="Fechar imagem">&times;</button>
+      <img :src="zoomImg?.src" :alt="zoomImg?.alt || 'Imagem expandida'">
+    </div>
+  </main>
+
+  <footer class="border-t border-white/10 py-8">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-zinc-500">
+      <p>&copy; <span id="year"></span> Kleber S. Lago. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
+  <script src="js/common.js"></script>
+</body>
+</html>

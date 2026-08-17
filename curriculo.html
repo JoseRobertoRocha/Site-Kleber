@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR" x-data="{dark:localStorage.getItem('theme')==='dark'||(!localStorage.getItem('theme')&&window.matchMedia('(prefers-color-scheme: dark)').matches),mm:false}" :class="{'dark':dark}" x-init="$watch('dark',v=>localStorage.setItem('theme',v?'dark':'light'))">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Currículo profissional de Kleber S. Lago, gerente de marketing estratégico.">
+  <meta name="author" content="Kleber S. Lago">
+  <title>Currículo | Kleber S. Lago</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=PT+Sans:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-zinc-950 text-zinc-100 antialiased">
+  <header class="fixed inset-x-0 top-0 z-50 bg-zinc-950/85 backdrop-blur-md border-b border-white/10">
+    <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between" aria-label="Navegação principal">
+      <a href="principal.html" class="font-display font-bold text-xl tracking-tight text-white">Kleber <span class="text-[#FF6B2B]">S. Lago</span></a>
+      <ul class="hidden md:flex items-center gap-8 text-sm" role="list">
+        <li><a href="principal.html#services" class="text-zinc-400 hover:text-white transition-colors">Serviços</a></li>
+        <li><a href="projetos.html" class="text-zinc-400 hover:text-white transition-colors">Projetos</a></li>
+        <li><a href="principal.html#about" class="text-zinc-400 hover:text-white transition-colors">Sobre</a></li>
+        <li><a href="curriculo.html" class="text-white font-medium">Currículo</a></li>
+        <li><a href="principal.html#contact" class="text-zinc-400 hover:text-white transition-colors">Contato</a></li>
+      </ul>
+      <button @click="mm=!mm" class="md:hidden w-9 h-9 flex items-center justify-center rounded-full border border-white/15" aria-label="Abrir ou fechar menu">
+        <svg x-show="!mm" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <svg x-show="mm" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </nav>
+    <div x-show="mm" x-cloak class="md:hidden border-t border-white/10 bg-zinc-950">
+      <ul class="px-6 py-5 flex flex-col gap-4 text-sm" role="list">
+        <li><a href="principal.html#services" class="block text-zinc-300">Serviços</a></li>
+        <li><a href="projetos.html" class="block text-zinc-300">Projetos</a></li>
+        <li><a href="principal.html#about" class="block text-zinc-300">Sobre</a></li>
+        <li><a href="curriculo.html" class="block text-white font-medium">Currículo</a></li>
+        <li><a href="principal.html#contact" class="block text-zinc-300">Contato</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="relative overflow-hidden pt-28 pb-20">
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="absolute -top-20 left-[-10%] w-[32rem] h-[32rem] bg-cyan-500/10 rounded-full blur-3xl"></div>
+      <div class="absolute top-10 right-[-8%] w-[36rem] h-[36rem] bg-purple-500/15 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 right-1/4 w-[28rem] h-[28rem] bg-lime-500/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <section class="relative max-w-5xl mx-auto px-5">
+      <div class="mb-8 text-center">
+        <p class="text-xs font-medium text-[#FF6B2B] tracking-[0.28em] uppercase mb-3">Currículo profissional</p>
+        <h1 class="font-display font-bold text-4xl md:text-6xl text-white">Kleber S. Lago</h1>
+        <p class="mt-4 text-zinc-400">Gerente de Marketing Estratégico</p>
+      </div>
+
+      <article class="mx-auto max-w-4xl bg-white text-zinc-900 shadow-2xl shadow-black/40 rounded-sm p-6 sm:p-10 md:p-14 print:shadow-none print:rounded-none">
+        <header class="border-b border-zinc-200 pb-8 mb-8">
+          <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+            <div>
+              <h2 class="font-display font-bold text-3xl md:text-4xl text-zinc-950">Kleber S. Lago</h2>
+              <p class="mt-2 text-lg text-zinc-700">Gerente de Marketing Estratégico</p>
+              <p class="mt-4 max-w-2xl text-sm leading-7 text-zinc-600">
+                Profissional com mais de 10 anos de experiência em marketing e conteúdo, com atuação em gestão de equipes, agências, campanhas, eventos, processos e projetos. Experiência com multinacionais e empresas familiares, liderança e estruturação de equipes, com foco em gerar crescimento, inovação e valor.
+              </p>
+            </div>
+            <div class="text-sm text-zinc-600 md:text-right leading-7 shrink-0">
+              <p>klebersimaslago@gmail.com</p>
+              <p>linkedin.com/in/kleber-s-lago</p>
+              <p>instagram.com/omktdokleber</p>
+              <p>WhatsApp: +55 11 97336-7068</p>
+            </div>
+          </div>
+        </header>
+
+        <div class="grid md:grid-cols-[1fr_2fr] gap-10">
+          <aside class="space-y-8">
+            <section>
+              <h3 class="text-xs font-bold tracking-[0.22em] uppercase text-zinc-500 mb-4">Formação</h3>
+              <div class="space-y-4 text-sm">
+                <div>
+                  <p class="font-bold text-zinc-950">Comunicação e Marketing</p>
+                  <p class="text-zinc-600">FAAP</p>
+                </div>
+                <div>
+                  <p class="font-bold text-zinc-950">Gestão</p>
+                  <p class="text-zinc-600">Fundação Dom Cabral</p>
+                </div>
+                <div>
+                  <p class="font-bold text-zinc-950">Mídia</p>
+                  <p class="text-zinc-600">ComSchool</p>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <h3 class="text-xs font-bold tracking-[0.22em] uppercase text-zinc-500 mb-4">Competências</h3>
+              <ul class="space-y-2 text-sm text-zinc-700">
+                <li>Marketing estratégico</li>
+                <li>Gestão de campanhas</li>
+                <li>Trade marketing e PDV</li>
+                <li>Conteúdo proprietário</li>
+                <li>E-mail marketing e CRM</li>
+                <li>Lançamentos digitais</li>
+                <li>Gestão de equipes</li>
+                <li>Análise de KPIs</li>
+              </ul>
+            </section>
+
+            <section>
+              <h3 class="text-xs font-bold tracking-[0.22em] uppercase text-zinc-500 mb-4">Indicadores</h3>
+              <div class="grid grid-cols-3 md:grid-cols-1 gap-3 text-sm">
+                <div class="border border-zinc-200 rounded-xl p-3">
+                  <p class="font-display font-bold text-2xl text-zinc-950">34+</p>
+                  <p class="text-xs text-zinc-500">Projetos entregues</p>
+                </div>
+                <div class="border border-zinc-200 rounded-xl p-3">
+                  <p class="font-display font-bold text-2xl text-zinc-950">21+</p>
+                  <p class="text-xs text-zinc-500">Clientes satisfeitos</p>
+                </div>
+                <div class="border border-zinc-200 rounded-xl p-3">
+                  <p class="font-display font-bold text-2xl text-zinc-950">5 anos</p>
+                  <p class="text-xs text-zinc-500">Experiência</p>
+                </div>
+              </div>
+            </section>
+          </aside>
+
+          <div class="space-y-8">
+            <section>
+              <h3 class="text-xs font-bold tracking-[0.22em] uppercase text-zinc-500 mb-4">Resumo profissional</h3>
+              <p class="text-sm leading-7 text-zinc-700">
+                Atuo com foco em resultados no mercado B2B e também possuo experiência em e-commerce. Combino visão estratégica orientada por dados, planejamento de marca, conteúdo e integração comercial. Estruturei processos, estratégias e ações que fortaleceram áreas de marketing e geraram crescimento, inovação e relevância de marca.
+              </p>
+            </section>
+
+            <section>
+              <h3 class="text-xs font-bold tracking-[0.22em] uppercase text-zinc-500 mb-4">Experiência</h3>
+              <div class="space-y-6">
+                <div>
+                  <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                    <h4 class="font-bold text-zinc-950">Gerente de Marketing</h4>
+                    <span class="text-xs text-zinc-500">Marketing, conteúdo e crescimento</span>
+                  </div>
+                  <p class="mt-2 text-sm leading-7 text-zinc-700">
+                    Liderança de estratégias de marketing B2B, gestão de campanhas, construção de processos, coordenação de agências e desenvolvimento de ações integradas entre marketing e comercial.
+                  </p>
+                </div>
+                <div>
+                  <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                    <h4 class="font-bold text-zinc-950">Estruturação de área de marketing</h4>
+                    <span class="text-xs text-zinc-500">Empresa farmacêutica</span>
+                  </div>
+                  <p class="mt-2 text-sm leading-7 text-zinc-700">
+                    Responsável por estruturar do zero o setor de marketing, criando processos, estratégias e ações que consolidaram a área como parte fundamental para o crescimento da empresa.
+                  </p>
+                </div>
+                <div>
+                  <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                    <h4 class="font-bold text-zinc-950">Vivência em multinacionais e mídia</h4>
+                    <span class="text-xs text-zinc-500">RedeTV!, Terra e Oficial Farma</span>
+                  </div>
+                  <p class="mt-2 text-sm leading-7 text-zinc-700">
+                    Experiência em negócios de diferentes segmentos e portes, com atuação em campanhas, conteúdo, eventos, performance, relacionamento com parceiros e jornada do consumidor.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <h3 class="text-xs font-bold tracking-[0.22em] uppercase text-zinc-500 mb-4">Projetos em destaque</h3>
+              <div class="space-y-5">
+                <div>
+                  <h4 class="font-bold text-zinc-950">Go-to-market geolocalizado | Protelim</h4>
+                  <p class="mt-1 text-sm leading-7 text-zinc-700">Campanha com Geo Ads, pré-lançamento no PDV, mix promocional customizado, treinamento online e incentivo comercial. Resultados: +25% penetração, +18% ticket médio e +20% vendas do produto.</p>
+                </div>
+                <div>
+                  <h4 class="font-bold text-zinc-950">Protcast - Conexões que Geram Negócios</h4>
+                  <p class="mt-1 text-sm leading-7 text-zinc-700">Estratégia de conteúdo proprietário, distribuição multicanal e integração comercial para gerar posicionamento, audiência e networking qualificado.</p>
+                </div>
+                <div>
+                  <h4 class="font-bold text-zinc-950">Estratégia de PDV | Protelim</h4>
+                  <p class="mt-1 text-sm leading-7 text-zinc-700">Criação de política de contrapartidas para materiais de ponto de venda, com metas de compra, reativação de clientes e ações de exposição da marca.</p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </article>
+
+      <div class="mt-8 flex justify-center print:hidden">
+        <a href="curriculo.html" download="curriculo-kleber-lago.html" class="inline-flex items-center justify-center rounded-full bg-white text-zinc-950 px-8 py-3.5 text-sm font-bold hover:bg-zinc-200 transition-colors">
+          Download currículo
+        </a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
